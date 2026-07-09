@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Migrato.App.ViewModels"
+             x:Class="Migrato.App.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+  <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" MaxWidth="600">
+    <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" HorizontalAlignment="Center" />
+    <TextBlock Text="{x:Static vm:UI.HomeSubtitle}"
+               FontSize="16" Opacity="0.75" TextWrapping="Wrap" TextAlignment="Center" />
+
+    <Button Command="{Binding SendCommand}" HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left" Padding="22,16" Margin="0,20,0,0" CornerRadius="10">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{x:Static vm:UI.HomeOldTitle}" FontSize="19" FontWeight="SemiBold" />
+        <TextBlock Text="{x:Static vm:UI.HomeOldSub}" FontSize="13" Opacity="0.7" />
+      </StackPanel>
+    </Button>
+
+    <Button Command="{Binding ReceiveCommand}" HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left" Padding="22,16" CornerRadius="10">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{x:Static vm:UI.HomeNewTitle}" FontSize="19" FontWeight="SemiBold" />
+        <TextBlock Text="{x:Static vm:UI.HomeNewSub}" FontSize="13" Opacity="0.7" />
+      </StackPanel>
+    </Button>
+
+    <TextBlock Text="{x:Static vm:UI.HomeFooter}"
+               FontSize="12" Opacity="0.55" HorizontalAlignment="Center" Margin="0,16,0,0" />
+    <TextBlock Text="{Binding VersionText}" FontSize="11" Opacity="0.4"
+               HorizontalAlignment="Center" />
+  </StackPanel>
+</UserControl>

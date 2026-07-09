@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Migrato.App/Migrato.App.csproj" />
+    <Project Path="src/Migrato.Core/Migrato.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Migrato.Core.Tests/Migrato.Core.Tests.csproj" />
+  </Folder>
+</Solution>

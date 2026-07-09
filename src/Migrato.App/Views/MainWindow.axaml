@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Migrato.App.ViewModels"
+        xmlns:views="using:Migrato.App.Views"
+        x:Class="Migrato.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Migrato"
+        Width="920" Height="680" MinWidth="720" MinHeight="560"
+        WindowStartupLocation="CenterScreen">
+
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type vm:HomeViewModel}">
+      <views:HomeView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ReceiveViewModel}">
+      <views:ReceiveView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:SendViewModel}">
+      <views:SendView />
+    </DataTemplate>
+  </Window.DataTemplates>
+
+  <ContentControl Content="{Binding CurrentPage}" />
+</Window>

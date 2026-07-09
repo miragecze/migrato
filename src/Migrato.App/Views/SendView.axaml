@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Migrato.App.ViewModels"
+             x:Class="Migrato.App.Views.SendView"
+             x:DataType="vm:SendViewModel">
+
+  <Grid Margin="32" RowDefinitions="Auto,*,Auto">
+
+    <TextBlock Grid.Row="0" Text="{Binding ErrorText}" Foreground="OrangeRed" TextWrapping="Wrap"
+               Margin="0,0,0,10"
+               IsVisible="{Binding ErrorText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+    <!-- Krok 1: výběr zařízení / device selection -->
+    <Grid Grid.Row="1" RowDefinitions="Auto,Auto,*,Auto,Auto" IsVisible="{Binding StepDevices}">
+      <TextBlock Grid.Row="0" Text="{x:Static vm:UI.SndPickTitle}" FontSize="24" FontWeight="SemiBold" />
+      <TextBlock Grid.Row="1" Margin="0,6,0,14" Opacity="0.7" TextWrapping="Wrap"
+                 Text="{x:Static vm:UI.SndPickHint}" />
+      <ListBox Grid.Row="2" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="vm:DeviceVm">
+            <StackPanel Orientation="Horizontal" Spacing="12" Margin="4">
+              <TextBlock Text="💻" FontSize="22" VerticalAlignment="Center" />
+              <StackPanel>
+                <TextBlock Text="{Binding Machine}" FontWeight="SemiBold" FontSize="15" />
+                <TextBlock Text="{Binding Detail}" FontSize="12" Opacity="0.6" />
+              </StackPanel>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <StackPanel Grid.Row="3" Spacing="6" Margin="0,12,0,0">
+        <TextBlock Text="{x:Static vm:UI.SndManualHint}" FontSize="12" Opacity="0.6" TextWrapping="Wrap" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Grid.Column="0" Text="{Binding ManualAddress}" Watermark="192.168.1.5:51234"
+                   Margin="0,0,8,0" />
+          <Button Grid.Column="1" Content="{x:Static vm:UI.SndManualButton}"
+                  Command="{Binding ManualConnectCommand}" Padding="14,6" />
+        </Grid>
+      </StackPanel>
+      <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10" Margin="0,14,0,0"
+                  HorizontalAlignment="Right">
+        <Button Content="{x:Static vm:UI.Back}" Command="{Binding BackCommand}" Padding="20,8" />
+        <Button Content="{x:Static vm:UI.Continue}" Command="{Binding ChooseDeviceCommand}" Padding="20,8"
+                Classes="accent"
+                IsEnabled="{Binding SelectedDevice, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      </StackPanel>
+    </Grid>
+
+    <!-- Krok 2: PIN -->
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16"
+                IsVisible="{Binding StepPin}">
+      <TextBlock Text="{x:Static vm:UI.SndPinTitle}" FontSize="24" FontWeight="SemiBold"
+                 HorizontalAlignment="Center" />
+      <TextBlock Text="{x:Static vm:UI.SndPinHint}" Opacity="0.7" HorizontalAlignment="Center" />
+      <TextBox Text="{Binding PinText}" MaxLength="6" Width="220" FontSize="34"
+               HorizontalContentAlignment="Center" HorizontalAlignment="Center" Watermark="000000" />
+      <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+        <Button Content="{x:Static vm:UI.Back}" Command="{Binding BackCommand}" Padding="20,8" />
+        <Button Content="{x:Static vm:UI.Continue}" Command="{Binding ConnectCommand}" Padding="20,8"
+                Classes="accent" />
+      </StackPanel>
+    </StackPanel>
+
+    <!-- Krok 3: skenování / scanning -->
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16"
+                IsVisible="{Binding StepScan}">
+      <TextBlock Text="{x:Static vm:UI.SndScanTitle}" FontSize="22" FontWeight="SemiBold"
+                 HorizontalAlignment="Center" />
+      <ProgressBar IsIndeterminate="True" Width="360" Height="10" />
+      <TextBlock Text="{Binding ScanStatus}" Opacity="0.7" HorizontalAlignment="Center" />
+    </StackPanel>
+
+    <!-- Krok 4: výběr obsahu / content selection -->
+    <Grid Grid.Row="1" RowDefinitions="Auto,*,Auto" IsVisible="{Binding StepSelect}">
+      <TextBlock Grid.Row="0" Text="{x:Static vm:UI.SndSelectTitle}" FontSize="24" FontWeight="SemiBold"
+                 Margin="0,0,0,12" />
+      <ScrollViewer Grid.Row="1">
+        <ItemsControl ItemsSource="{Binding Groups}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:GroupVm">
+              <Border BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                      BorderThickness="0,0,0,1" Padding="4,10">
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                  <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" />
+                  <TextBlock Grid.Column="1" Text="{Binding Icon}" FontSize="22" Margin="6,0,12,0"
+                             VerticalAlignment="Center" />
+                  <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="15" />
+                    <TextBlock Text="{Binding Description}" FontSize="12" Opacity="0.65"
+                               TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding WarningText}" FontSize="12" Foreground="Orange"
+                               TextWrapping="Wrap" IsVisible="{Binding HasWarning}" />
+                  </StackPanel>
+                  <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="13" Opacity="0.7"
+                             VerticalAlignment="Center" Margin="12,0,0,0" />
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
+        <TextBlock Grid.Column="0" Text="{Binding SelectedTotalText}" VerticalAlignment="Center"
+                   FontWeight="SemiBold" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+          <Button Content="{x:Static vm:UI.Back}" Command="{Binding BackCommand}" Padding="20,8" />
+          <Button Content="{x:Static vm:UI.SndStart}" Command="{Binding TransferCommand}" Padding="20,8"
+                  Classes="accent" />
+        </StackPanel>
+      </Grid>
+    </Grid>
+
+    <!-- Krok 5: přenos / transfer -->
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="14" MaxWidth="640"
+                IsVisible="{Binding StepTransfer}">
+      <TextBlock Text="{x:Static vm:UI.SndTransferring}" FontSize="24" FontWeight="SemiBold"
+                 HorizontalAlignment="Center" />
+      <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="14" CornerRadius="7" />
+      <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center" />
+      <TextBlock Text="{Binding CurrentFile}" Opacity="0.6" FontSize="12" HorizontalAlignment="Center"
+                 TextTrimming="CharacterEllipsis" MaxWidth="560" />
+      <TextBlock Text="{Binding TransferStatus}" Opacity="0.7" FontSize="13"
+                 HorizontalAlignment="Center" />
+      <Button Content="{x:Static vm:UI.Cancel}" Command="{Binding CancelTransferCommand}"
+              HorizontalAlignment="Center" Padding="20,8" />
+    </StackPanel>
+
+    <!-- Krok 6: hotovo / done -->
+    <StackPanel Grid.Row="1" VerticalAlignment="Center" Spacing="14" MaxWidth="640"
+                IsVisible="{Binding StepDone}">
+      <TextBlock Text="{x:Static vm:UI.SndDoneTitle}" FontSize="28" FontWeight="SemiBold"
+                 HorizontalAlignment="Center" />
+      <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" TextAlignment="Center" />
+      <ItemsControl ItemsSource="{Binding PostResultLines}" HorizontalAlignment="Center">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="x:String">
+            <TextBlock Text="{Binding}" FontSize="13" Opacity="0.8" Margin="0,2" TextWrapping="Wrap" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <Button Content="{x:Static vm:UI.SndHome}" Command="{Binding FinishCommand}"
+              HorizontalAlignment="Center" Padding="24,8" Classes="accent" />
+    </StackPanel>
+  </Grid>
+</UserControl>

@@ -1,0 +1,136 @@
+{
+  "profiles": [
+    {
+      "key": "thunderbird",
+      "name": "Mozilla Thunderbird",
+      "description": "Pošta, účty, hesla, kontakty, kalendář, filtry i rozšíření",
+      "descriptionEn": "Mail, accounts, passwords, contacts, calendar, filters and add-ons",
+      "processName": "thunderbird",
+      "wingetId": "Mozilla.Thunderbird",
+      "paths": [{ "root": "Roaming", "rel": "Thunderbird" }]
+    },
+    {
+      "key": "firefox",
+      "name": "Mozilla Firefox",
+      "description": "Záložky, hesla, historie, rozšíření i otevřené panely",
+      "descriptionEn": "Bookmarks, passwords, history, extensions and open tabs",
+      "processName": "firefox",
+      "wingetId": "Mozilla.Firefox",
+      "paths": [{ "root": "Roaming", "rel": "Mozilla/Firefox" }]
+    },
+    {
+      "key": "chrome-bookmarks",
+      "name": "Google Chrome — záložky",
+      "description": "Záložky výchozího profilu (hesla přenést nelze — jsou šifrovaná na míru počítači)",
+      "descriptionEn": "Default profile bookmarks (passwords cannot be transferred — they are encrypted per computer)",
+      "processName": "chrome",
+      "wingetId": "Google.Chrome",
+      "paths": [{ "root": "Local", "rel": "Google/Chrome/User Data/Default/Bookmarks" }]
+    },
+    {
+      "key": "edge-bookmarks",
+      "name": "Microsoft Edge — záložky",
+      "description": "Záložky výchozího profilu (hesla přenést nelze — jsou šifrovaná na míru počítači)",
+      "descriptionEn": "Default profile bookmarks (passwords cannot be transferred — they are encrypted per computer)",
+      "processName": "msedge",
+      "wingetId": null,
+      "paths": [{ "root": "Local", "rel": "Microsoft/Edge/User Data/Default/Bookmarks" }]
+    },
+    {
+      "key": "notepadpp",
+      "name": "Notepad++",
+      "description": "Nastavení, makra, neuložené soubory z otevřených panelů",
+      "descriptionEn": "Settings, macros, unsaved files from open tabs",
+      "processName": "notepad++",
+      "wingetId": "Notepad++.Notepad++",
+      "paths": [{ "root": "Roaming", "rel": "Notepad++" }]
+    },
+    {
+      "key": "vlc",
+      "name": "VLC media player",
+      "description": "Nastavení a playlisty",
+      "descriptionEn": "Settings and playlists",
+      "processName": "vlc",
+      "wingetId": "VideoLAN.VLC",
+      "paths": [{ "root": "Roaming", "rel": "vlc" }]
+    },
+    {
+      "key": "filezilla",
+      "name": "FileZilla",
+      "description": "Uložené servery (Site Manager) a nastavení",
+      "descriptionEn": "Saved servers (Site Manager) and settings",
+      "processName": "filezilla",
+      "wingetId": "TimKosse.FileZilla.Client",
+      "paths": [{ "root": "Roaming", "rel": "FileZilla" }]
+    },
+    {
+      "key": "obs",
+      "name": "OBS Studio",
+      "description": "Scény, profily a nastavení streamování",
+      "descriptionEn": "Scenes, profiles and streaming settings",
+      "processName": "obs64",
+      "wingetId": "OBSProject.OBSStudio",
+      "paths": [{ "root": "Roaming", "rel": "obs-studio" }]
+    },
+    {
+      "key": "gimp",
+      "name": "GIMP",
+      "description": "Nastavení, štětce a skripty",
+      "descriptionEn": "Settings, brushes and scripts",
+      "processName": "gimp",
+      "wingetId": "GIMP.GIMP",
+      "paths": [{ "root": "Roaming", "rel": "GIMP" }]
+    },
+    {
+      "key": "libreoffice",
+      "name": "LibreOffice",
+      "description": "Uživatelský profil — slovníky, šablony, automatické opravy",
+      "descriptionEn": "User profile — dictionaries, templates, autocorrect",
+      "processName": "soffice",
+      "wingetId": "TheDocumentFoundation.LibreOffice",
+      "paths": [{ "root": "Roaming", "rel": "LibreOffice" }]
+    },
+    {
+      "key": "keepass",
+      "name": "KeePass",
+      "description": "Nastavení aplikace (databázi .kdbx přeneste v rámci složek se soubory)",
+      "descriptionEn": "App settings (transfer your .kdbx database within the file folders)",
+      "processName": "keepass",
+      "wingetId": "DominikReichl.KeePass",
+      "paths": [{ "root": "Roaming", "rel": "KeePass" }]
+    },
+    {
+      "key": "vscode",
+      "name": "Visual Studio Code",
+      "description": "Nastavení, klávesové zkratky a snippety",
+      "descriptionEn": "Settings, keybindings and snippets",
+      "processName": "code",
+      "wingetId": "Microsoft.VisualStudioCode",
+      "paths": [
+        { "root": "Roaming", "rel": "Code/User/settings.json" },
+        { "root": "Roaming", "rel": "Code/User/keybindings.json" },
+        { "root": "Roaming", "rel": "Code/User/snippets" }
+      ]
+    },
+    {
+      "key": "windows-terminal",
+      "name": "Windows Terminal",
+      "description": "Nastavení a profily terminálu",
+      "descriptionEn": "Terminal settings and profiles",
+      "processName": null,
+      "wingetId": "Microsoft.WindowsTerminal",
+      "paths": [
+        { "root": "Local", "rel": "Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" }
+      ]
+    },
+    {
+      "key": "irfanview",
+      "name": "IrfanView",
+      "description": "Nastavení prohlížeče obrázků",
+      "descriptionEn": "Image viewer settings",
+      "processName": "i_view64",
+      "wingetId": "IrfanSkiljan.IrfanView",
+      "paths": [{ "root": "Roaming", "rel": "IrfanView" }]
+    }
+  ]
+}
