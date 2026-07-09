@@ -22,8 +22,12 @@ jobs:
           dotnet publish src/Migrato.App -c Release -r win-x64 --self-contained
           -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
           -o publish
+      - name: Zip for browsers that refuse bare exe downloads
+        run: Compress-Archive -Path publish/Migrato.exe -DestinationPath publish/Migrato-win-x64.zip
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: publish/Migrato.exe
+          files: |
+            publish/Migrato.exe
+            publish/Migrato-win-x64.zip
           generate_release_notes: true

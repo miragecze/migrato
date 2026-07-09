@@ -40,7 +40,7 @@ Unblock-File "$dir\Migrato.exe"
 
 ## Jak na to
 
-1. Stáhněte `Migrato.exe` z [Releases](../../releases) na **oba** počítače (nebo použijte PowerShell příkaz výše).
+1. Stáhněte `Migrato.exe` z [Releases](../../releases) na **oba** počítače (nebo použijte PowerShell příkaz výše). Pokud prohlížeč exe odmítne stáhnout, vezměte `Migrato-win-x64.zip` a rozbalte ho.
 2. Na **novém** počítači spusťte Migrato a zvolte **„Tento počítač je NOVÝ“** — zobrazí se 6místný PIN.
 3. Na **starém** počítači zvolte **„Tento počítač je STARÝ“** — nový počítač se objeví v seznamu (oba musí být ve stejné síti). Když se neobjeví (NAT, virtuální stroje, oddělené podsítě), použijte **ruční připojení IP:port** — adresa je na obrazovce nového počítače.
 4. Zadejte PIN, vyberte co přenést a spusťte přenos.

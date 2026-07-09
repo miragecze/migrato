@@ -3,6 +3,12 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.6.2] — 2026-07-09
+
+### Změněno
+- Vydání obsahují vedle `Migrato.exe` i `Migrato-win-x64.zip` — pro prohlížeče,
+  které odmítají stahovat spustitelné soubory.
+
 ## [0.6.1] — 2026-07-09
 
 ### Změněno

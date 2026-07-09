@@ -40,7 +40,7 @@ Unblock-File "$dir\Migrato.exe"
 
 ## How to use it
 
-1. Download `Migrato.exe` from [Releases](../../releases) on **both** computers (or use the PowerShell quick start above).
+1. Download `Migrato.exe` from [Releases](../../releases) on **both** computers (or use the PowerShell quick start above). If your browser refuses the exe, grab `Migrato-win-x64.zip` instead and unpack it.
 2. On the **new** computer run Migrato and choose **“This is the NEW computer”** — a 6-digit PIN appears.
 3. On the **old** computer choose **“This is the OLD computer”** — the new computer shows up in the list (both must be on the same network). If it doesn't (NAT, VMs, separated subnets), use the **manual IP:port connection** shown on the new computer's screen.
 4. Enter the PIN, pick what to transfer, start.
