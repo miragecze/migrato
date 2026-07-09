@@ -25,6 +25,9 @@ public sealed class SourceScanner(string stagingDir)
         TransferGroup? wifi = await CreateWifiGroupAsync(ct).ConfigureAwait(false);
         if (wifi is not null) groups.Add(wifi);
 
+        TransferGroup? look = LookModule.Scan();
+        if (look is not null) groups.Add(look);
+
         return groups;
     }
 

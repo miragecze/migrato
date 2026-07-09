@@ -26,6 +26,15 @@ public sealed partial class PackageVm(string id) : ObservableObject
     [ObservableProperty] private bool _isSelected = true;
 }
 
+public sealed partial class SubItemVm(string segment, string display, long bytes) : ObservableObject
+{
+    /// <summary>Segment 1. úrovně; "" = soubory přímo v kořeni složky.</summary>
+    public string Segment { get; } = segment;
+    public string Display { get; } = display;
+    public long Bytes { get; } = bytes;
+    [ObservableProperty] private bool _isSelected = true;
+}
+
 public sealed partial class GroupVm : ObservableObject
 {
     [ObservableProperty] private bool _isSelected = true;
@@ -40,6 +49,24 @@ public sealed partial class GroupVm : ObservableObject
         $"Choose programs ({Packages.Count(p => p.IsSelected)} of {Packages.Count})");
 
     public void NotifyPackagesChanged() => OnPropertyChanged(nameof(PackagesHeader));
+
+    /// <summary>U známých složek: podsložky 1. úrovně k individuálnímu výběru.</summary>
+    public ObservableCollection<SubItemVm> SubItems { get; } = [];
+    public bool HasSubItems => SubItems.Count > 0;
+    public string SubItemsHeader => S.T(
+        $"Vybrat podsložky ({SubItems.Count(s => s.IsSelected)} z {SubItems.Count})",
+        $"Choose subfolders ({SubItems.Count(s => s.IsSelected)} of {SubItems.Count})");
+
+    /// <summary>Velikost po odečtení odškrtnutých podsložek.</summary>
+    public long EffectiveBytes => SubItems.Count == 0
+        ? Model.TotalBytes
+        : SubItems.Where(s => s.IsSelected).Sum(s => s.Bytes);
+
+    public void NotifySubItemsChanged()
+    {
+        OnPropertyChanged(nameof(SubItemsHeader));
+        OnPropertyChanged(nameof(EffectiveBytes));
+    }
     public string Icon => Model.Kind switch
     {
         "folder" => "📁",
@@ -47,6 +74,7 @@ public sealed partial class GroupVm : ObservableObject
         "profile" => "🧩",
         "winget" => "📦",
         "wifi" => "📶",
+        "look" => "🎨",
         _ => "🗂",
     };
     public string Title => Model.Title;
@@ -70,6 +98,7 @@ public partial class SendViewModel : ObservableObject, IDisposable
     private readonly SpeedMeter _speed = new();
     private List<TransferGroup>? _scannedGroups;
     private CancellationTokenSource? _transferCts;
+    private SendSession? _activeSession;
 
     /// <summary>Texty pohledu — nová instance VM po přepnutí jazyka je přenačte.</summary>
     public UI L { get; } = new();
@@ -93,8 +122,13 @@ public partial class SendViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _summaryText = "";
     [ObservableProperty] private string _selectedTotalText = "";
     [ObservableProperty] private string _reportInfo = "";
+    [ObservableProperty] private bool _isPaused;
 
     private TransferSummary? _lastSummary;
+
+    public string PauseLabel => IsPaused ? S.T("▶ Pokračovat", "▶ Resume") : S.T("⏸ Pozastavit", "⏸ Pause");
+
+    partial void OnIsPausedChanged(bool value) => OnPropertyChanged(nameof(PauseLabel));
 
     public ObservableCollection<DeviceVm> Devices { get; } = [];
     public ObservableCollection<GroupVm> Groups { get; } = [];
@@ -223,6 +257,14 @@ public partial class SendViewModel : ObservableObject, IDisposable
                     package.PropertyChanged += (_, _) => vm.NotifyPackagesChanged();
                     vm.Packages.Add(package);
                 }
+                if (group.Kind == "folder")
+                {
+                    foreach (SubItemVm sub in BuildSubItems(group))
+                    {
+                        sub.PropertyChanged += (_, _) => vm.NotifySubItemsChanged();
+                        vm.SubItems.Add(sub);
+                    }
+                }
                 Groups.Add(vm);
             }
         }
@@ -290,13 +332,38 @@ public partial class SendViewModel : ObservableObject, IDisposable
         }
     }
 
+    /// <summary>Podsložky 1. úrovně se součty velikostí — pro jemnější výběr.</summary>
+    private static List<SubItemVm> BuildSubItems(TransferGroup group)
+    {
+        var segments = group.Files
+            .GroupBy(f => TransferGroupFilter.TopSegment(f.RelativePath), StringComparer.OrdinalIgnoreCase)
+            .Select(g => (Segment: g.Key, Bytes: g.Sum(f => f.Length), Count: g.Count()))
+            .OrderByDescending(g => g.Bytes)
+            .ToList();
+        if (segments.Count < 2) return [];
+
+        return segments.Select(s => new SubItemVm(
+            s.Segment,
+            $"{(s.Segment.Length == 0 ? S.T("(soubory přímo ve složce)", "(files in the folder root)") : s.Segment)}"
+            + $" • {Format.Bytes(s.Bytes)}",
+            s.Bytes)).ToList();
+    }
+
+    /// <summary>Skupina tak, jak se skutečně pošle — s odfiltrovanými podsložkami.</summary>
+    private static TransferGroup EffectiveModel(GroupVm g)
+    {
+        if (g.SubItems.Count == 0 || g.SubItems.All(s => s.IsSelected)) return g.Model;
+        return TransferGroupFilter.KeepTopLevel(
+            g.Model, g.SubItems.Where(s => s.IsSelected).Select(s => s.Segment).ToList());
+    }
+
     private void UpdateSelectedTotal()
     {
         List<GroupVm> selected = Groups.Where(g => g.IsSelected).ToList();
         SelectedTotalText = selected.Count == 0
             ? S.T("Nic není vybráno.", "Nothing selected.")
-            : S.T($"Vybráno {selected.Count} položek • {Format.Bytes(selected.Sum(g => g.Model.TotalBytes))}",
-                  $"Selected {selected.Count} items • {Format.Bytes(selected.Sum(g => g.Model.TotalBytes))}");
+            : S.T($"Vybráno {selected.Count} položek • {Format.Bytes(selected.Sum(g => g.EffectiveBytes))}",
+                  $"Selected {selected.Count} items • {Format.Bytes(selected.Sum(g => g.EffectiveBytes))}");
     }
 
     [RelayCommand]
@@ -308,7 +375,10 @@ public partial class SendViewModel : ObservableObject, IDisposable
             WingetExport.ApplySelection(
                 g.Model, g.Packages.Where(p => p.IsSelected).Select(p => p.Id).ToList());
 
-        List<TransferGroup> selected = Groups.Where(g => g.IsSelected).Select(g => g.Model).ToList();
+        List<TransferGroup> selected = Groups.Where(g => g.IsSelected)
+            .Select(EffectiveModel)
+            .Where(m => m.Files.Count > 0)
+            .ToList();
         if (selected.Count == 0)
         {
             ErrorText = S.T("Vyberte alespoň jednu položku.", "Select at least one item.");
@@ -324,6 +394,8 @@ public partial class SendViewModel : ObservableObject, IDisposable
 
         var session = new SendSession(
             SelectedDevice.Device.Address.ToString(), SelectedDevice.Device.Port, PinText.Trim());
+        _activeSession = session;
+        IsPaused = false;
         session.StatusChanged += s => Dispatcher.UIThread.Post(() => TransferStatus = s);
         session.ProgressChanged += p => Dispatcher.UIThread.Post(() =>
         {
@@ -373,6 +445,11 @@ public partial class SendViewModel : ObservableObject, IDisposable
                 $"Přenos selhal: {ex.Message} Zkuste to znovu — naváže se tam, kde skončil.",
                 $"Transfer failed: {ex.Message} Try again — it will resume where it left off.");
         }
+        finally
+        {
+            _activeSession = null;
+            IsPaused = false;
+        }
     }
 
     [RelayCommand]
@@ -392,7 +469,21 @@ public partial class SendViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void CancelTransfer() => _transferCts?.Cancel();
+    private void PauseResume()
+    {
+        if (_activeSession is null) return;
+        IsPaused = !IsPaused;
+        _activeSession.SetPaused(IsPaused);
+    }
+
+    [RelayCommand]
+    private void CancelTransfer()
+    {
+        // Zrušení musí projít i z pauzy.
+        _activeSession?.SetPaused(false);
+        IsPaused = false;
+        _transferCts?.Cancel();
+    }
 
     [RelayCommand]
     private void Finish() => _main.NavigateHome();

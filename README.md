@@ -6,6 +6,10 @@ An open-source tool for moving your data to a new Windows PC — over Wi-Fi (loc
 
 Run the app on both computers, a PIN appears on the new one, pick what to transfer on the old one, done. The UI is in English or Czech, following your Windows language.
 
+| Home | Receiving (new PC) |
+|---|---|
+| ![Migrato home screen](docs/screenshots/home.png) | ![Migrato receive screen with pairing PIN](docs/screenshots/receive.png) |
+
 ## What it transfers
 
 - **Files** — Desktop, Documents, Downloads, Pictures, Music, Videos, Favorites. Folders are resolved via Windows APIs, so OneDrive-redirected folders work too. Plus **any custom folders** from anywhere (including other drives) — they land on the new PC's desktop in “Transferred folders”.

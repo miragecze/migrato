@@ -103,6 +103,19 @@
                         </ItemsControl>
                       </ScrollViewer>
                     </Expander>
+                    <Expander Header="{Binding SubItemsHeader}" IsVisible="{Binding HasSubItems}"
+                              FontSize="12" Margin="0,6,0,0">
+                      <ScrollViewer MaxHeight="240">
+                        <ItemsControl ItemsSource="{Binding SubItems}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SubItemVm">
+                              <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Display}"
+                                        FontSize="12" Padding="6,2" MinHeight="26" />
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </ScrollViewer>
+                    </Expander>
                   </StackPanel>
                   <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="13" Opacity="0.7"
                              VerticalAlignment="Center" Margin="12,0,0,0" />
@@ -142,8 +155,10 @@
                  HorizontalAlignment="Center" />
       <TextBlock Text="{Binding L.KeepLidOpen}" FontSize="12" Opacity="0.55"
                  TextWrapping="Wrap" TextAlignment="Center" />
-      <Button Content="{Binding L.Cancel}" Command="{Binding CancelTransferCommand}"
-              HorizontalAlignment="Center" Padding="20,8" />
+      <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+        <Button Content="{Binding PauseLabel}" Command="{Binding PauseResumeCommand}" Padding="20,8" />
+        <Button Content="{Binding L.Cancel}" Command="{Binding CancelTransferCommand}" Padding="20,8" />
+      </StackPanel>
     </StackPanel>
 
     <!-- Krok 6: hotovo / done -->

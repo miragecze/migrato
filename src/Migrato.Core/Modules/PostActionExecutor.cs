@@ -20,6 +20,7 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
                 ActionType.WingetImport => await WingetImportAsync(action, status, ct).ConfigureAwait(false),
                 ActionType.WifiImport => await WifiImportAsync(action, status, ct).ConfigureAwait(false),
                 ActionType.EnsureApp => await EnsureAppAsync(action, status, ct).ConfigureAwait(false),
+                ActionType.ApplyLook => ApplyLook(action),
                 _ => new PostActionResult(action.Type, action.AppKey, false, S.UnknownAction),
             };
             results.Add(result);
@@ -61,6 +62,26 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
         return code == 0
             ? new PostActionResult(action.Type, null, true, S.ProgramsInstalled)
             : new PostActionResult(action.Type, null, false, S.ProgramsPartlyFailed);
+    }
+
+    private PostActionResult ApplyLook(PostAction action)
+    {
+        if (!OperatingSystem.IsWindows())
+            return new PostActionResult(action.Type, null, false, S.OnlyOnWindows);
+
+        List<string> paths = (action.ItemIds ?? [])
+            .Select(resolveItemPath)
+            .Where(p => p is not null)
+            .Select(p => p!)
+            .ToList();
+        (bool wallpaper, int fonts) = LookModule.Apply(paths);
+
+        if (!wallpaper && fonts == 0)
+            return new PostActionResult(action.Type, null, false, S.LookNothingApplied);
+        var parts = new List<string>();
+        if (wallpaper) parts.Add(S.WallpaperSet);
+        if (fonts > 0) parts.Add(S.FontsRegistered(fonts));
+        return new PostActionResult(action.Type, null, true, string.Join(" ", parts));
     }
 
     /// <summary>Odstraní pseudo-grafiku průběhu (spinnery, \r, procenta) z řádku wingetu.</summary>

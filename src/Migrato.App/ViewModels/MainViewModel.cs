@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -63,6 +64,8 @@ public partial class HomeViewModel : ObservableObject
     /// Tichá kontrola nové verze na GitHubu — při neúspěchu (offline, limit API)
     /// se prostě nic nezobrazí; aplikace na ní nijak nezávisí.
     /// </summary>
+    private Version? _latest;
+
     private async Task CheckForUpdateAsync()
     {
         try
@@ -78,13 +81,66 @@ public partial class HomeViewModel : ObservableObject
             var latest = Version.Parse(tag.TrimStart('v', 'V'));
             var current = Version.Parse(AppVersion.Current);
             if (latest > current)
+            {
+                _latest = latest;
                 Dispatcher.UIThread.Post(() => UpdateText = S.T(
-                    $"⬆ Je k dispozici nová verze {latest} — klikněte pro stažení",
-                    $"⬆ New version {latest} available — click to download"));
+                    $"⬆ Aktualizovat na verzi {latest}",
+                    $"⬆ Update to version {latest}"));
+            }
         }
         catch
         {
             // Kontrola aktualizací je jen bonus — nesmí ovlivnit start aplikace.
+        }
+    }
+
+    /// <summary>
+    /// Stáhne nejnovější exe a vymění se za běžící: exe se přejmenuje na .old
+    /// (běžící soubor jde na Windows přejmenovat, ne přepsat), nový se nasune
+    /// na jeho místo a aplikace se restartuje. Zbylý .old uklidí příští start.
+    /// </summary>
+    [RelayCommand]
+    private async Task UpdateAsync()
+    {
+        if (_latest is null) return;
+
+        if (!OperatingSystem.IsWindows() || Environment.ProcessPath is not { } exe)
+        {
+            Process.Start(new ProcessStartInfo(LatestReleaseUri.ToString()) { UseShellExecute = true });
+            return;
+        }
+
+        try
+        {
+            UpdateText = S.T("Stahuji aktualizaci (~100 MB)…", "Downloading update (~100 MB)…");
+            string newExe = Path.Combine(Path.GetTempPath(), "Migrato-update.exe");
+            using (var http = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
+            await using (Stream download = await http.GetStreamAsync(
+                             RepoUrl + "/releases/latest/download/Migrato.exe"))
+            await using (FileStream file = File.Create(newExe))
+            {
+                await download.CopyToAsync(file);
+            }
+
+            UpdateText = S.T("Restartuji…", "Restarting…");
+            Process.Start(new ProcessStartInfo("cmd.exe",
+                "/c timeout /t 2 /nobreak >nul"
+                + $" & move /y \"{exe}\" \"{exe}.old\""
+                + $" & move /y \"{newExe}\" \"{exe}\""
+                + $" & start \"\" \"{exe}\"")
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+            });
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+            UpdateText = S.T(
+                $"Aktualizace selhala: {ex.Message} — klikněte pro stažení z GitHubu",
+                $"Update failed: {ex.Message} — click to download from GitHub");
+            _latest = null; // další klik otevře prohlížeč
+            Process.Start(new ProcessStartInfo(LatestReleaseUri.ToString()) { UseShellExecute = true });
         }
     }
 

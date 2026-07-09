@@ -22,6 +22,9 @@ public static class Categories
     /// <summary>Vlastní složka vybraná uživatelem — na cíli přistane na ploše v „Přenesených složkách“.</summary>
     public const string Custom = "custom";
 
+    /// <summary>Vzhled: tapeta (rel „wallpaper…“) a uživatelská písma (rel „fonts/…“).</summary>
+    public const string Look = "look";
+
     public static readonly string[] KnownFolderNames =
         ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Favorites"];
 }

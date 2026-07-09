@@ -185,6 +185,7 @@ public sealed class ReceiveSession : IDisposable
         int filesDone = 0, filesOk = 0, filesFailed = 0;
         var errors = new List<string>();
         var postResults = new List<PostActionResult>();
+        var failedIds = new HashSet<int>(); // odesílatel může neúspěšné soubory poslat znovu
 
         while (true)
         {
@@ -233,7 +234,6 @@ public sealed class ReceiveSession : IDisposable
                     try
                     {
                         File.Move(partPath, finalPath, overwrite: true);
-                        filesOk++;
                     }
                     catch (Exception ex)
                     {
@@ -242,15 +242,29 @@ public sealed class ReceiveSession : IDisposable
                     }
                 }
 
-                if (!ok)
+                bool wasFailed = failedIds.Contains(item.Id);
+                if (ok)
+                {
+                    filesOk++;
+                    if (failedIds.Remove(item.Id))
+                    {
+                        // Opakovaný pokus uspěl — chyba prvního pokusu se ruší.
+                        filesFailed--;
+                        errors.RemoveAll(e => e.StartsWith(item.RelativePath + ": ", StringComparison.Ordinal));
+                    }
+                }
+                else
                 {
                     error ??= S.ChecksumMismatch;
                     TryDelete(partPath);
-                    filesFailed++;
-                    errors.Add($"{item.RelativePath}: {error}");
+                    if (failedIds.Add(item.Id))
+                    {
+                        filesFailed++;
+                        errors.Add($"{item.RelativePath}: {error}");
+                    }
                 }
-                filesDone++;
-                bytesDone += item.Length - offset;
+                if (!wasFailed) filesDone++;
+                bytesDone = Math.Min(bytesDone + item.Length - offset, totalBytes);
                 await MessageIO.WriteAsync(tls, new Msg
                 {
                     T = MsgType.FileAck, Id = item.Id, Ok = ok, Error = error,

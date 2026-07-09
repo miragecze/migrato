@@ -3,6 +3,20 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.7.0] — 2026-07-09
+
+### Přidáno
+- **Výběr podsložek** — známé složky (Dokumenty, Plocha…) se dají rozbalit a
+  odškrtnout podsložky 1. úrovně, s velikostmi („Dokumenty bez Archivu“).
+- **Automatická aktualizace** — tlačítko novou verzi stáhne, vymění exe a
+  restartuje aplikaci; ruční stahování odpadá.
+- **Druhé kolo neúspěšných souborů** — soubory zamčené při prvním průchodu se
+  na konci přenosu zkusí automaticky ještě jednou.
+- **Pauza přenosu** — tlačítko Pozastavit/Pokračovat; spojení zůstává otevřené.
+- **Modul Vzhled** — přenese tapetu plochy a uživatelská písma; na novém PC se
+  tapeta rovnou nastaví a písma zaregistrují.
+- Screenshoty v README (generované nástrojem tools/Migrato.Screenshots).
+
 ## [0.6.3] — 2026-07-09
 
 ### Opraveno

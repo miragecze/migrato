@@ -6,6 +6,10 @@ Otevřený nástroj pro přestěhování dat na nový počítač s Windows — p
 
 Spustíte aplikaci na obou počítačích, na novém se zobrazí PIN, na starém vyberete, co přenést, a je to. Aplikace mluví česky nebo anglicky podle jazyka Windows.
 
+| Úvod | Příjem (nový PC) |
+|---|---|
+| ![Úvodní obrazovka Migrato](docs/screenshots/home.png) | ![Obrazovka příjmu s párovacím PINem](docs/screenshots/receive.png) |
+
 ## Co umí přenést
 
 - **Soubory** — Plocha, Dokumenty, Stažené soubory, Obrázky, Hudba, Videa, Oblíbené položky. Složky se hledají přes Windows API, takže funguje i přesměrování do OneDrive. K tomu **libovolné vlastní složky** odkudkoli (i z jiných disků) — na novém PC přistanou na ploše v „Přenesených složkách“.

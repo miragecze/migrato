@@ -34,6 +34,14 @@ public sealed class DestinationResolver(string stagingDir)
             return Path.Combine(root, rel);
         }
 
+        if (item.Category == Categories.Look)
+        {
+            string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            return item.RelativePath.StartsWith("fonts/", StringComparison.Ordinal)
+                ? Path.Combine(local, "Microsoft", "Windows", "Fonts", Path.GetFileName(rel))
+                : Path.Combine(local, "Migrato", rel);
+        }
+
         if (item.Category == Categories.Custom)
         {
             string desktop = KnownFolders.Get("Desktop")

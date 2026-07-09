@@ -17,9 +17,19 @@ public sealed class SendSession(string host, int port, string pin, string? machi
     private const int ChunkSize = 128 * 1024;
 
     private readonly string _machineName = machineName ?? Environment.MachineName;
+    private volatile bool _paused;
 
     public event Action<string>? StatusChanged;
     public event Action<TransferProgress>? ProgressChanged;
+
+    public bool IsPaused => _paused;
+
+    /// <summary>Pozastaví/obnoví odesílání dat; TCP spojení zůstává otevřené (drží ho keepalive).</summary>
+    public void SetPaused(bool paused)
+    {
+        _paused = paused;
+        StatusChanged?.Invoke(paused ? S.Paused : S.TransferringFiles);
+    }
 
     public async Task<TransferSummary> RunAsync(
         IReadOnlyList<TransferGroup> groups, CancellationToken ct = default)
@@ -109,6 +119,7 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         long bytesDone = parts.Values.Sum();
         int filesDone = 0, filesOk = 0, filesFailed = 0;
         var errors = new List<string>();
+        var failedItems = new List<TransferItem>();
 
         // Ověřování navázaných dat neposílá nic po síti — bez hlášky by to
         // vypadalo jako zamrzlá aplikace (čte a hashuje se celý už přenesený objem).
@@ -125,32 +136,42 @@ public sealed class SendSession(string host, int port, string pin, string? machi
                 announcedTransferring = true;
             }
 
-            await MessageIO.WriteAsync(tls, new Msg
-            {
-                T = MsgType.File, Id = item.Id, Offset = offset,
-            }, ct).ConfigureAwait(false);
-
             long baseDone = bytesDone;
-            string sha = await SendFileBytesAsync(
-                tls, sourceById[item.Id], offset, item.Length,
+            bool ok = await SendOneFileAsync(
+                tls, item, offset,
                 sent => ProgressChanged?.Invoke(new TransferProgress(
                     baseDone + sent, totalBytes, filesDone, items.Count, item.RelativePath)),
-                ct).ConfigureAwait(false);
-
-            await MessageIO.WriteAsync(tls, new Msg
-            {
-                T = MsgType.FileEnd, Id = item.Id, Sha256 = sha,
-            }, ct).ConfigureAwait(false);
-
-            Msg ack = await MessageIO.ExpectAsync(tls, MsgType.FileAck, ct).ConfigureAwait(false);
-            if (ack.Ok == true) filesOk++;
+                sourceById, errors, ct).ConfigureAwait(false);
+            if (ok) filesOk++;
             else
             {
                 filesFailed++;
-                errors.Add($"{item.RelativePath}: {ack.Error ?? S.UnknownError}");
+                failedItems.Add(item);
             }
             filesDone++;
             bytesDone += item.Length - offset;
+        }
+
+        // Druhé kolo: soubory zamčené při prvním průchodu (antivirus, otevřený
+        // dokument) mívají za pár minut volno — jeden pokus navíc, od nuly.
+        if (failedItems.Count > 0 && !ct.IsCancellationRequested)
+        {
+            StatusChanged?.Invoke(S.RetryingFailed(failedItems.Count));
+            foreach (TransferItem item in failedItems)
+            {
+                ct.ThrowIfCancellationRequested();
+                errors.RemoveAll(e => e.StartsWith(item.RelativePath + ": ", StringComparison.Ordinal));
+                bool ok = await SendOneFileAsync(
+                    tls, item, offset: 0,
+                    _ => ProgressChanged?.Invoke(new TransferProgress(
+                        bytesDone, totalBytes, filesDone, items.Count, item.RelativePath)),
+                    sourceById, errors, ct).ConfigureAwait(false);
+                if (ok)
+                {
+                    filesOk++;
+                    filesFailed--;
+                }
+            }
         }
 
         List<PostActionResult> postResults = [];
@@ -170,11 +191,35 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         return new TransferSummary(filesOk, filesFailed, bytesDone, errors, postResults);
     }
 
+    /// <summary>Odešle jeden soubor (hlavička, tělo, hash) a vrátí, zda ho cíl potvrdil.</summary>
+    private async Task<bool> SendOneFileAsync(
+        Stream tls, TransferItem item, long offset, Action<long> onProgress,
+        Dictionary<int, string> sourceById, List<string> errors, CancellationToken ct)
+    {
+        await MessageIO.WriteAsync(tls, new Msg
+        {
+            T = MsgType.File, Id = item.Id, Offset = offset,
+        }, ct).ConfigureAwait(false);
+
+        string sha = await SendFileBytesAsync(
+            tls, sourceById[item.Id], offset, item.Length, onProgress, ct).ConfigureAwait(false);
+
+        await MessageIO.WriteAsync(tls, new Msg
+        {
+            T = MsgType.FileEnd, Id = item.Id, Sha256 = sha,
+        }, ct).ConfigureAwait(false);
+
+        Msg ack = await MessageIO.ExpectAsync(tls, MsgType.FileAck, ct).ConfigureAwait(false);
+        if (ack.Ok == true) return true;
+        errors.Add($"{item.RelativePath}: {ack.Error ?? S.UnknownError}");
+        return false;
+    }
+
     /// <summary>
     /// Pošle přesně manifestovaný počet bajtů od daného offsetu; hash se počítá
     /// od začátku souboru, aby odpovídal tomu, co příjemce složí dohromady.
     /// </summary>
-    private static async Task<string> SendFileBytesAsync(
+    private async Task<string> SendFileBytesAsync(
         Stream target, string sourcePath, long offset, long manifestLength,
         Action<long> onProgress, CancellationToken ct)
     {
@@ -191,6 +236,7 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         int chunksSinceProgress = 0;
         while (position < manifestLength)
         {
+            while (_paused) await Task.Delay(250, ct).ConfigureAwait(false);
             int toRead = (int)Math.Min(ChunkSize, manifestLength - position);
             int read = await file.ReadAsync(buffer.AsMemory(0, toRead), ct).ConfigureAwait(false);
             if (read == 0) throw new IOException(S.FileEndedEarly(sourcePath));

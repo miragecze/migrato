@@ -69,4 +69,7 @@ public static class ActionType
 
     /// <summary>Ověřit, že je aplikace nainstalovaná; případně ji doinstalovat přes winget.</summary>
     public const string EnsureApp = "ensureApp";
+
+    /// <summary>Nastavit přenesenou tapetu a zaregistrovat přenesená písma.</summary>
+    public const string ApplyLook = "applyLook";
 }

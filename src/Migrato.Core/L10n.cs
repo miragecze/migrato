@@ -177,6 +177,32 @@ public static class S
     public static string ToolTimedOut(string tool, int seconds) =>
         T($"Nástroj {tool} nestihl doběhnout v limitu {seconds} s.", $"The {tool} tool did not finish within {seconds} s.");
 
+    // ---- vzhled / appearance ----
+    public static string LookTitle => T("Vzhled — tapeta a písma", "Appearance — wallpaper and fonts");
+    public static string LookDesc(bool wallpaper, int fonts)
+    {
+        string wp = wallpaper ? T("tapeta plochy", "desktop wallpaper") : "";
+        string f = fonts > 0 ? T($"{fonts} uživatelských písem", $"{fonts} user fonts") : "";
+        string joined = (wp, f) switch
+        {
+            ("", var only) => only,
+            (var only, "") => only,
+            _ => $"{wp} + {f}",
+        };
+        return T($"Přenese se {joined}", $"Transfers {joined}");
+    }
+    public static string WallpaperSet => T("Tapeta nastavena.", "Wallpaper set.");
+    public static string FontsRegistered(int n) =>
+        T($"Zaregistrováno {n} písem.", $"Registered {n} fonts.");
+    public static string LookNothingApplied =>
+        T("Žádná položka vzhledu nedorazila.", "No appearance items arrived.");
+
+    // ---- navazování a opakování / resume & retry ----
+    public static string RetryingFailed(int n) =>
+        T($"Zkouším znovu {n} neúspěšných souborů…", $"Retrying {n} failed files…");
+    public static string Paused =>
+        T("Pozastaveno — spojení zůstává otevřené.", "Paused — the connection stays open.");
+
     // ---- vlastní složky / custom folders ----
     public static string TransferredFoldersDir => T("Přenesené složky", "Transferred folders");
     public static string CustomFolderDesc(string path) =>
