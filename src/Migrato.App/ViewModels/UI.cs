@@ -32,6 +32,10 @@ public static class UI
     public static string RcvReceiving => T("Přijímám data…", "Receiving data…");
     public static string RcvDone => T("✅  Hotovo", "✅  Done");
 
+    public static string KeepLidOpen => T(
+        "💡 U notebooků nechte během přenosu otevřené víko — jeho zavření počítač uspí a přenos přeruší.",
+        "💡 On laptops, keep the lid open during the transfer — closing it puts the computer to sleep and interrupts the transfer.");
+
     // Odeslání / Send
     public static string SndPickTitle => T("Vyberte nový počítač", "Select the new computer");
     public static string SndPickHint => T(

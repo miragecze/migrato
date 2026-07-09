@@ -27,6 +27,8 @@
         <TextBlock Text="{Binding AddressInfo}" FontSize="13" Opacity="0.6"
                    HorizontalAlignment="Center"
                    IsVisible="{Binding AddressInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        <TextBlock Text="{x:Static vm:UI.KeepLidOpen}" FontSize="12" Opacity="0.55"
+                   TextWrapping="Wrap" TextAlignment="Center" />
       </StackPanel>
 
       <!-- Průběh přenosu / transfer progress -->

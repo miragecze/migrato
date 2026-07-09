@@ -121,6 +121,8 @@
                  TextTrimming="CharacterEllipsis" MaxWidth="560" />
       <TextBlock Text="{Binding TransferStatus}" Opacity="0.7" FontSize="13"
                  HorizontalAlignment="Center" />
+      <TextBlock Text="{x:Static vm:UI.KeepLidOpen}" FontSize="12" Opacity="0.55"
+                 TextWrapping="Wrap" TextAlignment="Center" />
       <Button Content="{x:Static vm:UI.Cancel}" Command="{Binding CancelTransferCommand}"
               HorizontalAlignment="Center" Padding="20,8" />
     </StackPanel>

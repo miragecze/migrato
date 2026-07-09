@@ -28,6 +28,7 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         using var client = new TcpClient { NoDelay = true };
         StatusChanged?.Invoke(S.Connecting);
         await client.ConnectAsync(host, port, ct).ConfigureAwait(false);
+        SocketTuning.EnableKeepAlive(client.Client);
 
         string serverFingerprint = "";
         await using var tls = new SslStream(client.GetStream(), leaveInnerStreamOpen: false,

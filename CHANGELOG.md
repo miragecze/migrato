@@ -3,6 +3,17 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.4.1] — 2026-07-09
+
+### Opraveno
+- **Mrtvé spojení už nevisí donekonečna.** TCP keepalive: když protistrana usne
+  (zavřené víko notebooku) nebo zmizí ze sítě, obě strany to do ~30 sekund poznají
+  a zobrazí chybu s pokynem k navázání — místo věčného „Přijímám data…“.
+
+### Přidáno
+- Upozornění na obrazovkách čekání a přenosu: u notebooků nechte otevřené víko
+  (zavření víka uspí počítač i přes blokování uspání — systémové chování Windows).
+
 ## [0.4.0] — 2026-07-09
 
 ### Přidáno

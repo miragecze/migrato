@@ -58,6 +58,7 @@ public sealed class ReceiveSession : IDisposable
             ct.ThrowIfCancellationRequested();
             using TcpClient client = await _listener.AcceptTcpClientAsync(ct).ConfigureAwait(false);
             client.NoDelay = true;
+            SocketTuning.EnableKeepAlive(client.Client);
 
             TransferSummary? summary = await HandleClientAsync(client, ct).ConfigureAwait(false);
             if (summary is not null)
