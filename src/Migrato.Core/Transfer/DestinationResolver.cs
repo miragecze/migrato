@@ -34,6 +34,13 @@ public sealed class DestinationResolver(string stagingDir)
             return Path.Combine(root, rel);
         }
 
+        if (item.Category == Categories.Custom)
+        {
+            string desktop = KnownFolders.Get("Desktop")
+                             ?? throw new InvalidOperationException("Plocha nenalezena.");
+            return Path.Combine(desktop, S.TransferredFoldersDir, rel);
+        }
+
         return item.Category switch
         {
             Categories.Winget => Path.Combine(StagingDir, "winget", rel),

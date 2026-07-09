@@ -167,6 +167,30 @@ public sealed class SourceScanner(string stagingDir)
     }
 
     /// <summary>
+    /// Prohledá uživatelem vybranou složku. Relativní cesty začínají názvem
+    /// složky (kořen je rodič), takže na cíli vznikne stejnojmenná složka.
+    /// </summary>
+    public static TransferGroup? ScanCustomFolder(string path, CancellationToken ct = default)
+    {
+        var dir = new DirectoryInfo(path);
+        if (!dir.Exists) return null;
+
+        string root = dir.Parent?.FullName ?? dir.FullName;
+        var files = new List<ScannedFile>();
+        CollectFiles(dir.FullName, root, Categories.Custom, files, ct);
+        if (files.Count == 0) return null;
+
+        return new TransferGroup
+        {
+            Key = "custom:" + dir.FullName,
+            Kind = "custom",
+            Title = dir.Name,
+            Description = S.CustomFolderDesc(dir.FullName),
+            Files = files,
+        };
+    }
+
+    /// <summary>
     /// Rekurzivně posbírá soubory; přeskakuje reparse pointy (symlinky, junctiony)
     /// a nečitelné položky — jeden zamčený soubor nesmí zastavit celý sken.
     /// </summary>

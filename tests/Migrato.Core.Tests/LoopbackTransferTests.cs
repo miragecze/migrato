@@ -109,6 +109,36 @@ public sealed class LoopbackTransferTests : IDisposable
     }
 
     [Fact]
+    public async Task CustomFolder_ScansAndLandsInTransferredFolders()
+    {
+        // Vlastní složka s podsložkou — jako by ji uživatel vybral přes „Přidat vlastní složku“.
+        string customDir = Path.Combine(_srcDir, "Projekty");
+        CreateSourceFile(Path.Combine("Projekty", "plan.txt"), 5_000);
+        CreateSourceFile(Path.Combine("Projekty", "2026", "data.bin"), 50_000);
+
+        TransferGroup? group = SourceScanner.ScanCustomFolder(customDir);
+        Assert.NotNull(group);
+        Assert.Equal("Projekty", group.Title);
+        Assert.Equal(2, group.FileCount);
+        Assert.All(group.Files, f => Assert.StartsWith("Projekty/", f.RelativePath));
+
+        using var receiver = new ReceiveSession("test-prijemce");
+        Task<TransferSummary> receiveTask = receiver.RunAsync(CancellationToken.None);
+        int port = await WaitForPortAsync(receiver);
+        TransferSummary sent = await new SendSession("127.0.0.1", port, receiver.Pin, "t")
+            .RunAsync([group], CancellationToken.None);
+        TransferSummary received = await receiveTask;
+
+        Assert.Equal(2, sent.FilesOk);
+        Assert.Empty(received.Errors);
+        string destRoot = Path.Combine(_dstRoot, "Desktop", Migrato.Core.S.TransferredFoldersDir, "Projekty");
+        Assert.Equal(File.ReadAllBytes(Path.Combine(customDir, "plan.txt")),
+            File.ReadAllBytes(Path.Combine(destRoot, "plan.txt")));
+        Assert.Equal(File.ReadAllBytes(Path.Combine(customDir, "2026", "data.bin")),
+            File.ReadAllBytes(Path.Combine(destRoot, "2026", "data.bin")));
+    }
+
+    [Fact]
     public async Task SecondRun_SkipsCompletedFiles_AndVerifiesThem()
     {
         string big = CreateSourceFile("big.bin", 500_000);

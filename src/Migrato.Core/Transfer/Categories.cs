@@ -19,6 +19,9 @@ public static class Categories
     /// <summary>XML profily Wi-Fi sítí pro netsh (jdou do dočasné složky cíle).</summary>
     public const string Wifi = "wifi";
 
+    /// <summary>Vlastní složka vybraná uživatelem — na cíli přistane na ploše v „Přenesených složkách“.</summary>
+    public const string Custom = "custom";
+
     public static readonly string[] KnownFolderNames =
         ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Favorites"];
 }

@@ -8,7 +8,7 @@ Spustíte aplikaci na obou počítačích, na novém se zobrazí PIN, na starém
 
 ## Co umí přenést
 
-- **Soubory** — Plocha, Dokumenty, Stažené soubory, Obrázky, Hudba, Videa, Oblíbené položky. Složky se hledají přes Windows API, takže funguje i přesměrování do OneDrive.
+- **Soubory** — Plocha, Dokumenty, Stažené soubory, Obrázky, Hudba, Videa, Oblíbené položky. Složky se hledají přes Windows API, takže funguje i přesměrování do OneDrive. K tomu **libovolné vlastní složky** odkudkoli (i z jiných disků) — na novém PC přistanou na ploše v „Přenesených složkách“.
 - **Mozilla Thunderbird** — kompletní profil: účty, pošta, hesla, kontakty, kalendář, filtry, rozšíření.
 - **Mozilla Firefox** — kompletní profil: záložky, hesla, historie, rozšíření, otevřené panely.
 - **Nastavení dalších aplikací** — Notepad++, VLC, FileZilla, OBS Studio, GIMP, LibreOffice, KeePass, VS Code, Windows Terminal, IrfanView. Chybějící aplikace se doinstalují přes winget.

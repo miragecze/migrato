@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Net;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,6 +28,7 @@ public sealed partial class GroupVm : ObservableObject
     public string Icon => Model.Kind switch
     {
         "folder" => "📁",
+        "custom" => "📂",
         "profile" => "🧩",
         "winget" => "📦",
         "wifi" => "📶",
@@ -34,7 +36,7 @@ public sealed partial class GroupVm : ObservableObject
     };
     public string Title => Model.Title;
     public string Description => Model.Description;
-    public string SizeText => Model.Kind == "folder" || Model.Kind == "profile"
+    public string SizeText => Model.Kind is "folder" or "profile" or "custom"
         ? S.T($"{Model.FileCount:N0} souborů • {Format.Bytes(Model.TotalBytes)}",
               $"{Model.FileCount:N0} files • {Format.Bytes(Model.TotalBytes)}")
         : Format.Bytes(Model.TotalBytes);
@@ -206,6 +208,38 @@ public partial class SendViewModel : ObservableObject, IDisposable
 
         UpdateSelectedTotal();
         StepSelect = true;
+    }
+
+    /// <summary>Uživatelem vybrané složky nad rámec známých — projdou stejným přenosem.</summary>
+    [RelayCommand]
+    private async Task AddCustomFolderAsync()
+    {
+        if (Avalonia.Application.Current?.ApplicationLifetime
+            is not Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime
+            { MainWindow: { } window })
+            return;
+
+        var picked = await window.StorageProvider.OpenFolderPickerAsync(
+            new Avalonia.Platform.Storage.FolderPickerOpenOptions
+            {
+                Title = L.AddCustomFolderTitle,
+                AllowMultiple = true,
+            });
+
+        foreach (var folder in picked)
+        {
+            string? path = folder.TryGetLocalPath();
+            if (path is null) continue;
+            if (Groups.Any(g => g.Model.Key == "custom:" + path)) continue;
+
+            TransferGroup? group = await Task.Run(() => SourceScanner.ScanCustomFolder(path));
+            if (group is null) continue;
+
+            var vm = new GroupVm { Model = group };
+            vm.PropertyChanged += (_, _) => UpdateSelectedTotal();
+            Groups.Add(vm);
+        }
+        UpdateSelectedTotal();
     }
 
     private void UpdateSelectedTotal()

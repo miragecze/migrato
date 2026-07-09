@@ -99,10 +99,12 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
-      <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
-        <TextBlock Grid.Column="0" Text="{Binding SelectedTotalText}" VerticalAlignment="Center"
+      <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="0,14,0,0">
+        <Button Grid.Column="0" Content="{Binding L.AddCustomFolder}"
+                Command="{Binding AddCustomFolderCommand}" Padding="14,8" Margin="0,0,14,0" />
+        <TextBlock Grid.Column="1" Text="{Binding SelectedTotalText}" VerticalAlignment="Center"
                    FontWeight="SemiBold" />
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
           <Button Content="{Binding L.Back}" Command="{Binding BackCommand}" Padding="20,8" />
           <Button Content="{Binding L.SndStart}" Command="{Binding TransferCommand}" Padding="20,8"
                   Classes="accent" />

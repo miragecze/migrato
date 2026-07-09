@@ -174,6 +174,12 @@ public static class S
     public static string ToolTimedOut(string tool, int seconds) =>
         T($"Nástroj {tool} nestihl doběhnout v limitu {seconds} s.", $"The {tool} tool did not finish within {seconds} s.");
 
+    // ---- vlastní složky / custom folders ----
+    public static string TransferredFoldersDir => T("Přenesené složky", "Transferred folders");
+    public static string CustomFolderDesc(string path) =>
+        T($"{path} — na novém PC přistane na ploše ve složce „Přenesené složky“",
+          $"{path} — will land on the new PC's desktop in the “Transferred folders” folder");
+
     // ---- místo na disku / disk space ----
     public static string NotEnoughSpace(long needed, long free) =>
         T($"Na cílovém počítači není dost místa na disku (potřeba {Format.Bytes(needed)}, volných {Format.Bytes(free)}). Uvolněte místo nebo zmenšete výběr.",

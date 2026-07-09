@@ -52,6 +52,8 @@ public sealed class UI
         "Šest číslic zobrazených na novém počítači", "The six digits shown on the new computer");
     public string SndScanTitle => T("Zjišťuji, co lze přenést…", "Finding what can be transferred…");
     public string SndSelectTitle => T("Co se má přenést?", "What should be transferred?");
+    public string AddCustomFolder => T("➕ Přidat vlastní složku…", "➕ Add your own folder…");
+    public string AddCustomFolderTitle => T("Vyberte složky k přenosu", "Select folders to transfer");
     public string SndStart => T("🚀 Zahájit přenos", "🚀 Start transfer");
     public string SndTransferring => T("Přenáším…", "Transferring…");
     public string Cancel => T("Zrušit", "Cancel");

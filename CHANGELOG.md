@@ -3,6 +3,13 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.5.0] — 2026-07-09
+
+### Přidáno
+- **Vlastní složky** — tlačítko „➕ Přidat vlastní složku…“ na obrazovce výběru
+  (lze vybrat i více složek najednou, odkudkoli včetně jiných disků).
+  Na novém PC přistanou na ploše ve složce „Přenesené složky“.
+
 ## [0.4.3] — 2026-07-09
 
 ### Opraveno
