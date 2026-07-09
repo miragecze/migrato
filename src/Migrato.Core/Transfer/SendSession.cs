@@ -98,6 +98,13 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         Msg resume = await MessageIO.ExpectAsync(tls, MsgType.Resume, ct).ConfigureAwait(false);
         Dictionary<int, long> parts = resume.Parts ?? [];
 
+        // Kontrola místa na cíli dřív, než poteče první bajt — s rezervou na
+        // dočasné part soubory a práci systému.
+        const long spaceMargin = 200L * 1024 * 1024;
+        long toSend = totalBytes - parts.Values.Sum();
+        if (resume.FreeBytes is long free && toSend + spaceMargin > free)
+            throw new IOException(S.NotEnoughSpace(toSend, free));
+
         long bytesDone = parts.Values.Sum();
         int filesDone = 0, filesOk = 0, filesFailed = 0;
         var errors = new List<string>();

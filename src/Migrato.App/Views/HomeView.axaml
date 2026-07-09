@@ -4,6 +4,16 @@
              x:Class="Migrato.App.Views.HomeView"
              x:DataType="vm:HomeViewModel">
 
+  <Grid>
+    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal"
+                Spacing="2" Margin="14">
+      <Button Content="Česky" Command="{Binding SetLanguageCommand}" CommandParameter="cs"
+              FontSize="12" Padding="8,4" Background="Transparent" IsEnabled="{Binding IsEn}" />
+      <TextBlock Text="|" Opacity="0.35" VerticalAlignment="Center" FontSize="12" />
+      <Button Content="English" Command="{Binding SetLanguageCommand}" CommandParameter="en"
+              FontSize="12" Padding="8,4" Background="Transparent" IsEnabled="{Binding IsCz}" />
+    </StackPanel>
+
   <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" MaxWidth="600">
     <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" HorizontalAlignment="Center" />
     <TextBlock Text="{x:Static vm:UI.HomeSubtitle}"
@@ -42,4 +52,5 @@
                        FontSize="11" Padding="2,0" VerticalAlignment="Center" />
     </StackPanel>
   </StackPanel>
+  </Grid>
 </UserControl>

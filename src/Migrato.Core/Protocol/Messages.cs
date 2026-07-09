@@ -30,6 +30,9 @@ public sealed class Msg
     public long? TotalBytes { get; set; }
     public Dictionary<int, long>? Parts { get; set; }
 
+    /// <summary>Volné místo na cílovém disku (resume) — nepovinné, starší verze neposílají.</summary>
+    public long? FreeBytes { get; set; }
+
     // file / fileEnd / fileAck
     public int? Id { get; set; }
     public long? Offset { get; set; }

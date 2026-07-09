@@ -19,6 +19,9 @@ public static class UI
 
     public static string MadeBy => T(
         "vytvořil miragecze · zdrojáky na GitHubu", "made by miragecze · source on GitHub");
+    public static string SaveReport => T("💾 Uložit protokol na plochu", "💾 Save report to desktop");
+    public static string ReportIssue => T("Nahlásit problém", "Report an issue");
+    public static Uri IssuesUri { get; } = new("https://github.com/miragecze/migrato/issues");
 
     // Příjem / Receive
     public static string RcvTitle => T("📥  Tento počítač přijme data", "📥  This computer will receive data");

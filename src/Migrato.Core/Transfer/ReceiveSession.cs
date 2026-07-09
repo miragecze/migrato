@@ -161,8 +161,21 @@ public sealed class ReceiveSession : IDisposable
                 parts[item.Id] = item.Length;
             }
         }
-        await MessageIO.WriteAsync(tls, new Msg { T = MsgType.Resume, Parts = parts }, ct)
-            .ConfigureAwait(false);
+        long? freeBytes = null;
+        try
+        {
+            string root = Path.GetPathRoot(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))!;
+            freeBytes = new DriveInfo(root).AvailableFreeSpace;
+        }
+        catch
+        {
+            // Bez údaje o volném místě se kontrola na odesílateli prostě přeskočí.
+        }
+        await MessageIO.WriteAsync(tls, new Msg
+        {
+            T = MsgType.Resume, Parts = parts, FreeBytes = freeBytes,
+        }, ct).ConfigureAwait(false);
 
         long bytesDone = parts.Values.Sum();
         int filesDone = 0, filesOk = 0, filesFailed = 0;

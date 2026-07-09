@@ -72,6 +72,9 @@ public partial class SendViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _currentFile = "";
     [ObservableProperty] private string _summaryText = "";
     [ObservableProperty] private string _selectedTotalText = "";
+    [ObservableProperty] private string _reportInfo = "";
+
+    private TransferSummary? _lastSummary;
 
     public ObservableCollection<DeviceVm> Devices { get; } = [];
     public ObservableCollection<GroupVm> Groups { get; } = [];
@@ -243,6 +246,7 @@ public partial class SendViewModel : ObservableObject, IDisposable
         try
         {
             TransferSummary summary = await Task.Run(() => session.RunAsync(selected, _transferCts.Token));
+            _lastSummary = summary;
             StepTransfer = false;
             StepDone = true;
             SummaryText = S.T(
@@ -277,6 +281,22 @@ public partial class SendViewModel : ObservableObject, IDisposable
             ErrorText = S.T(
                 $"Přenos selhal: {ex.Message} Zkuste to znovu — naváže se tam, kde skončil.",
                 $"Transfer failed: {ex.Message} Try again — it will resume where it left off.");
+        }
+    }
+
+    [RelayCommand]
+    private void SaveReport()
+    {
+        if (_lastSummary is null) return;
+        try
+        {
+            string path = TransferReport.SaveToDesktop(_lastSummary, sending: true);
+            ReportInfo = S.T($"Protokol uložen: {path}", $"Report saved: {path}");
+        }
+        catch (Exception ex)
+        {
+            ReportInfo = S.T($"Protokol se nepodařilo uložit: {ex.Message}",
+                             $"Could not save the report: {ex.Message}");
         }
     }
 

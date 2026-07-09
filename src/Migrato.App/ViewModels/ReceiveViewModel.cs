@@ -26,6 +26,9 @@ public partial class ReceiveViewModel(MainViewModel main) : ObservableObject, ID
     [ObservableProperty] private string _progressText = "";
     [ObservableProperty] private string _currentFile = "";
     [ObservableProperty] private string _summaryText = "";
+    [ObservableProperty] private string _reportInfo = "";
+
+    private TransferSummary? _lastSummary;
 
     public ObservableCollection<string> PostResultLines { get; } = [];
 
@@ -86,6 +89,7 @@ public partial class ReceiveViewModel(MainViewModel main) : ObservableObject, ID
         try
         {
             TransferSummary summary = await Task.Run(() => _session!.RunAsync(_cts!.Token));
+            _lastSummary = summary;
             IsWaiting = false;
             IsTransferring = false;
             IsDone = true;
@@ -111,6 +115,22 @@ public partial class ReceiveViewModel(MainViewModel main) : ObservableObject, ID
             IsWaiting = false;
             IsTransferring = false;
             ErrorText = S.T($"Příjem selhal: {ex.Message}", $"Receiving failed: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private void SaveReport()
+    {
+        if (_lastSummary is null) return;
+        try
+        {
+            string path = TransferReport.SaveToDesktop(_lastSummary, sending: false);
+            ReportInfo = S.T($"Protokol uložen: {path}", $"Report saved: {path}");
+        }
+        catch (Exception ex)
+        {
+            ReportInfo = S.T($"Protokol se nepodařilo uložit: {ex.Message}",
+                             $"Could not save the report: {ex.Message}");
         }
     }
 

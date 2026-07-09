@@ -3,6 +3,17 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.4.0] — 2026-07-09
+
+### Přidáno
+- **Ikona aplikace** — v exe, na hlavním panelu i v okně.
+- **Přepínač jazyka** (Česky | English) na úvodní obrazovce; volba se pamatuje.
+- **Kontrola místa na disku** — příjemce ohlásí volné místo a odesílatel přenos
+  srozumitelně odmítne dřív, než poteče první bajt, pokud by se data nevešla.
+- **Protokol o přenosu** — tlačítko „Uložit protokol na plochu" na závěrečných
+  obrazovkách (souhrn, dokončovací akce, kompletní seznam chyb).
+- Odkaz **„Nahlásit problém"** (GitHub Issues) na závěrečných obrazovkách.
+
 ## [0.3.1] — 2026-07-09
 
 ### Přidáno

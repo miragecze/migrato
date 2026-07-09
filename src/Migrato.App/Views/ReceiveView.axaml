@@ -51,6 +51,13 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <Button Content="{x:Static vm:UI.SaveReport}" Command="{Binding SaveReportCommand}"
+                HorizontalAlignment="Center" Padding="16,6" />
+        <TextBlock Text="{Binding ReportInfo}" FontSize="12" Opacity="0.65" TextWrapping="Wrap"
+                   TextAlignment="Center"
+                   IsVisible="{Binding ReportInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        <HyperlinkButton Content="{x:Static vm:UI.ReportIssue}" NavigateUri="{x:Static vm:UI.IssuesUri}"
+                         FontSize="12" HorizontalAlignment="Center" />
       </StackPanel>
 
       <TextBlock Text="{Binding Status}" Opacity="0.65" FontSize="13" HorizontalAlignment="Center"

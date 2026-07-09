@@ -3,15 +3,52 @@ using System.Globalization;
 namespace Migrato.Core;
 
 /// <summary>
-/// Jazyk aplikace: čeština, když jsou Windows česky, jinak angličtina.
-/// Language of the app: Czech when Windows runs in Czech, English otherwise.
+/// Jazyk aplikace: uložená volba uživatele, jinak čeština při českých Windows
+/// a angličtina jinde. / User's saved choice; otherwise Czech on Czech Windows,
+/// English elsewhere.
 /// </summary>
 public static class Lang
 {
-    public static string Current { get; set; } =
-        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "cs" ? "cs" : "en";
+    private static readonly string PrefPath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Migrato", "language");
+
+    public static string Current { get; set; } = LoadInitial();
 
     public static bool IsCz => Current == "cs";
+
+    private static string LoadInitial()
+    {
+        try
+        {
+            if (File.Exists(PrefPath))
+            {
+                string saved = File.ReadAllText(PrefPath).Trim();
+                if (saved is "cs" or "en") return saved;
+            }
+        }
+        catch
+        {
+            // Poškozená/nedostupná volba — použije se jazyk Windows.
+        }
+        return CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "cs" ? "cs" : "en";
+    }
+
+    /// <summary>Přepne jazyk a zapamatuje si volbu pro příští spuštění.</summary>
+    public static void Save(string lang)
+    {
+        if (lang is not ("cs" or "en")) return;
+        Current = lang;
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(PrefPath)!);
+            File.WriteAllText(PrefPath, lang);
+        }
+        catch
+        {
+            // Volba platí aspoň do konce běhu aplikace.
+        }
+    }
 }
 
 /// <summary>
@@ -130,6 +167,22 @@ public static class S
         T($"Nástroj {tool} není dostupný: {reason}", $"The {tool} tool is not available: {reason}");
     public static string ToolTimedOut(string tool, int seconds) =>
         T($"Nástroj {tool} nestihl doběhnout v limitu {seconds} s.", $"The {tool} tool did not finish within {seconds} s.");
+
+    // ---- místo na disku / disk space ----
+    public static string NotEnoughSpace(long needed, long free) =>
+        T($"Na cílovém počítači není dost místa na disku (potřeba {Format.Bytes(needed)}, volných {Format.Bytes(free)}). Uvolněte místo nebo zmenšete výběr.",
+          $"Not enough disk space on the target computer (need {Format.Bytes(needed)}, {Format.Bytes(free)} free). Free up space or reduce the selection.");
+
+    // ---- protokol o přenosu / transfer report ----
+    public static string ReportTitle => T("Protokol o přenosu — Migrato", "Transfer report — Migrato");
+    public static string ReportDirectionSent => T("Role: odesílatel (starý počítač)", "Role: sender (old computer)");
+    public static string ReportDirectionReceived => T("Role: příjemce (nový počítač)", "Role: receiver (new computer)");
+    public static string ReportSummary(int ok, int failed, long bytes) =>
+        T($"Souborů v pořádku: {ok}, selhalo: {failed}, přeneseno: {Format.Bytes(bytes)}",
+          $"Files OK: {ok}, failed: {failed}, transferred: {Format.Bytes(bytes)}");
+    public static string ReportPostActions => T("Dokončovací akce:", "Finishing steps:");
+    public static string ReportErrors => T("Chyby:", "Errors:");
+    public static string ReportNoErrors => T("Žádné chyby.", "No errors.");
 
     // ---- chyby přes drát / wire errors ----
     // Kódy se lokalizují až na straně, která je zobrazuje.

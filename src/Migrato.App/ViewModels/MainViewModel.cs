@@ -82,4 +82,16 @@ public partial class HomeViewModel : ObservableObject
 
     [RelayCommand]
     private void Receive() => _main.NavigateReceive();
+
+    public bool IsCz => Lang.IsCz;
+    public bool IsEn => !Lang.IsCz;
+
+    /// <summary>Přepne jazyk a znovu postaví úvodní obrazovku s novými texty.</summary>
+    [RelayCommand]
+    private void SetLanguage(string lang)
+    {
+        if (lang == Lang.Current) return;
+        Lang.Save(lang);
+        _main.NavigateHome();
+    }
 }

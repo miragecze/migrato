@@ -1,4 +1,4 @@
-namespace Migrato.App.ViewModels;
+namespace Migrato.Core;
 
 public static class Format
 {
@@ -46,6 +46,6 @@ public sealed class SpeedMeter
         string speed = $"{Format.Bytes((long)_bytesPerSecond)}/s";
         long remaining = bytesTotal - bytesDone;
         if (remaining <= 0) return speed;
-        return $"{speed} • zbývá {Format.Eta(TimeSpan.FromSeconds(remaining / _bytesPerSecond))}";
+        return $"{speed} • {S.T("zbývá", "remaining")} {Format.Eta(TimeSpan.FromSeconds(remaining / _bytesPerSecond))}";
     }
 }
