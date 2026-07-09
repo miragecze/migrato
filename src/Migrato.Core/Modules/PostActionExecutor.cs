@@ -44,7 +44,14 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
             "winget",
             $"import -i \"{file}\" --accept-package-agreements --accept-source-agreements " +
             "--ignore-unavailable --ignore-versions --disable-interactivity",
-            timeoutSeconds: 3 * 3600, ct).ConfigureAwait(false);
+            timeoutSeconds: 3 * 3600, ct,
+            onLine: line =>
+            {
+                // Průběžný výstup wingetu do stavového řádku — bez něj instalace
+                // desítek programů vypadá jako zamrzlá aplikace.
+                string clean = Sanitize(line);
+                if (clean.Length > 3) status?.Invoke($"winget: {clean}");
+            }).ConfigureAwait(false);
 
         // winget import vrací nenulový kód i při dílčích neúspěších — soubor
         // s výstupem proto ukládáme vedle exportu pro pozdější kontrolu.
@@ -54,6 +61,18 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
         return code == 0
             ? new PostActionResult(action.Type, null, true, S.ProgramsInstalled)
             : new PostActionResult(action.Type, null, false, S.ProgramsPartlyFailed);
+    }
+
+    /// <summary>Odstraní pseudo-grafiku průběhu (spinnery, \r, procenta) z řádku wingetu.</summary>
+    private static string Sanitize(string line)
+    {
+        string last = line.Split('\r')[^1];
+        var sb = new System.Text.StringBuilder(last.Length);
+        foreach (char c in last)
+            if (!char.IsControl(c) && c is not ('█' or '▒' or '─'))
+                sb.Append(c);
+        string clean = sb.ToString().Trim();
+        return clean.Length > 90 ? clean[..90] + "…" : clean;
     }
 
     private async Task<PostActionResult> WifiImportAsync(

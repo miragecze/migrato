@@ -149,7 +149,8 @@ public static class S
     public static string WingetExportMissing =>
         T("Soubor s exportem programů nedorazil.", "The program export file did not arrive.");
     public static string InstallingPrograms =>
-        T("Instaluji programy přes winget — může trvat desítky minut…", "Installing programs via winget — this can take a long time…");
+        T("Instaluji programy přes winget — může trvat desítky minut a Windows se bude ptát výzvami UAC (potvrzujte je)…",
+          "Installing programs via winget — this can take a long time and Windows will show UAC prompts (please confirm them)…");
     public static string ProgramsInstalled => T("Programy nainstalovány.", "Programs installed.");
     public static string ProgramsPartlyFailed =>
         T("Některé programy se nepodařilo nainstalovat automaticky (podrobnosti v logu winget).",

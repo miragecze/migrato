@@ -5,9 +5,13 @@ namespace Migrato.Core.Modules;
 
 public static class ExternalTools
 {
-    /// <summary>Spustí externí nástroj (winget, netsh) a vrátí exit kód + spojený výstup.</summary>
+    /// <summary>
+    /// Spustí externí nástroj (winget, netsh) a vrátí exit kód + spojený výstup.
+    /// Volitelný onLine dostává řádky výstupu průběžně — pro živý stav v UI.
+    /// </summary>
     public static async Task<(int ExitCode, string Output)> RunAsync(
-        string fileName, string arguments, int timeoutSeconds = 1800, CancellationToken ct = default)
+        string fileName, string arguments, int timeoutSeconds = 1800, CancellationToken ct = default,
+        Action<string>? onLine = null)
     {
         var psi = new ProcessStartInfo
         {
@@ -23,8 +27,14 @@ public static class ExternalTools
 
         using var process = new Process { StartInfo = psi };
         var output = new StringBuilder();
-        process.OutputDataReceived += (_, e) => { if (e.Data is not null) lock (output) output.AppendLine(e.Data); };
-        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) lock (output) output.AppendLine(e.Data); };
+        void Collect(string? line)
+        {
+            if (line is null) return;
+            lock (output) output.AppendLine(line);
+            onLine?.Invoke(line);
+        }
+        process.OutputDataReceived += (_, e) => Collect(e.Data);
+        process.ErrorDataReceived += (_, e) => Collect(e.Data);
 
         try
         {

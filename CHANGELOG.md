@@ -3,6 +3,14 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.5.1] — 2026-07-09
+
+### Opraveno
+- **Instalace programů už není němá.** Výstup wingetu se průběžně propisuje do
+  stavového řádku příjemce (který balíček se právě stahuje/instaluje), takže je
+  vidět, že se pracuje. Hláška navíc předem upozorní na výzvy UAC — nepotvrzená
+  výzva se po ~2 minutách sama zavře a instalace daného programu tím selže.
+
 ## [0.5.0] — 2026-07-09
 
 ### Přidáno
