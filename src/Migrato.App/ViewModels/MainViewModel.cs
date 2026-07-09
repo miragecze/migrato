@@ -23,6 +23,14 @@ public partial class MainViewModel : ObservableObject
 
     public void NavigateReceive()
     {
+        // Jediná UAC výzva teď (uživatel právě kliknul a u počítače je) —
+        // instalace programů na konci přenosu pak běží bez dalších výzev.
+        if (!Migrato.Core.Modules.Elevation.IsElevated
+            && Migrato.Core.Modules.Elevation.TryRelaunchElevated("--receive"))
+        {
+            Environment.Exit(0);
+        }
+
         var vm = new ReceiveViewModel(this);
         CurrentPage = vm;
         vm.Start();

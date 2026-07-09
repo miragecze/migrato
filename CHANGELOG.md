@@ -3,6 +3,16 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.6.1] — 2026-07-09
+
+### Změněno
+- **Jediná UAC výzva na začátku místo výzev během instalací.** Po kliknutí na
+  „Tento počítač je NOVÝ“ se aplikace (po potvrzení UAC) restartuje jako správce
+  a instalace programů na konci přenosu pak běží bez dalších výzev — nepotvrzená
+  UAC výzva se totiž po ~2 minutách sama zavře a instalace jí selže, což je
+  problém u přenosů, u kterých nikdo nesedí. Odmítnutí UAC = chování postaru
+  (výzvy u jednotlivých instalací).
+
 ## [0.6.0] — 2026-07-09
 
 ### Přidáno

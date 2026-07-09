@@ -14,7 +14,12 @@ public class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow { DataContext = new MainViewModel() };
+            var mainViewModel = new MainViewModel();
+            desktop.MainWindow = new MainWindow { DataContext = mainViewModel };
+
+            // Instance restartovaná jako správce pokračuje rovnou na příjem.
+            if (desktop.Args?.Contains("--receive") == true)
+                mainViewModel.NavigateReceive();
         }
         base.OnFrameworkInitializationCompleted();
     }
