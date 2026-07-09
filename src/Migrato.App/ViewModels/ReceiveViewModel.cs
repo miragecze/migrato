@@ -14,6 +14,9 @@ public partial class ReceiveViewModel(MainViewModel main) : ObservableObject, ID
     private CancellationTokenSource? _cts;
     private readonly SpeedMeter _speed = new();
 
+    /// <summary>Texty pohledu — nová instance VM po přepnutí jazyka je přenačte.</summary>
+    public UI L { get; } = new();
+
     [ObservableProperty] private string _pin = "";
     [ObservableProperty] private string _machineName = Environment.MachineName;
     [ObservableProperty] private string _addressInfo = "";

@@ -54,6 +54,9 @@ public partial class SendViewModel : ObservableObject, IDisposable
     private List<TransferGroup>? _scannedGroups;
     private CancellationTokenSource? _transferCts;
 
+    /// <summary>Texty pohledu — nová instance VM po přepnutí jazyka je přenačte.</summary>
+    public UI L { get; } = new();
+
     [ObservableProperty] private bool _stepDevices = true;
     [ObservableProperty] private bool _stepPin;
     [ObservableProperty] private bool _stepScan;

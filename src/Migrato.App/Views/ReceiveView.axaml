@@ -10,30 +10,30 @@
 
       <!-- Čekání na spárování / waiting for pairing -->
       <StackPanel Spacing="14" IsVisible="{Binding IsWaiting}">
-        <TextBlock Text="{x:Static vm:UI.RcvTitle}" FontSize="24" FontWeight="SemiBold"
+        <TextBlock Text="{Binding L.RcvTitle}" FontSize="24" FontWeight="SemiBold"
                    HorizontalAlignment="Center" />
         <TextBlock Text="{Binding MachineInfo}" Opacity="0.7" HorizontalAlignment="Center" />
         <Border Background="{DynamicResource SystemControlBackgroundListLowBrush}"
                 CornerRadius="14" Padding="36,20" HorizontalAlignment="Center" Margin="0,10">
           <StackPanel Spacing="6">
-            <TextBlock Text="{x:Static vm:UI.RcvPinLabel}" FontSize="13" Opacity="0.7"
+            <TextBlock Text="{Binding L.RcvPinLabel}" FontSize="13" Opacity="0.7"
                        HorizontalAlignment="Center" />
             <TextBlock Text="{Binding Pin}" FontSize="56" FontWeight="Bold" LetterSpacing="8"
                        HorizontalAlignment="Center" />
           </StackPanel>
         </Border>
-        <TextBlock Text="{x:Static vm:UI.RcvInstruction}"
+        <TextBlock Text="{Binding L.RcvInstruction}"
                    TextWrapping="Wrap" TextAlignment="Center" Opacity="0.75" />
         <TextBlock Text="{Binding AddressInfo}" FontSize="13" Opacity="0.6"
                    HorizontalAlignment="Center"
                    IsVisible="{Binding AddressInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-        <TextBlock Text="{x:Static vm:UI.KeepLidOpen}" FontSize="12" Opacity="0.55"
+        <TextBlock Text="{Binding L.KeepLidOpen}" FontSize="12" Opacity="0.55"
                    TextWrapping="Wrap" TextAlignment="Center" />
       </StackPanel>
 
       <!-- Průběh přenosu / transfer progress -->
       <StackPanel Spacing="12" IsVisible="{Binding IsTransferring}">
-        <TextBlock Text="{x:Static vm:UI.RcvReceiving}" FontSize="24" FontWeight="SemiBold"
+        <TextBlock Text="{Binding L.RcvReceiving}" FontSize="24" FontWeight="SemiBold"
                    HorizontalAlignment="Center" />
         <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="14" CornerRadius="7" />
         <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center" />
@@ -43,7 +43,7 @@
 
       <!-- Hotovo / done -->
       <StackPanel Spacing="12" IsVisible="{Binding IsDone}">
-        <TextBlock Text="{x:Static vm:UI.RcvDone}" FontSize="28" FontWeight="SemiBold"
+        <TextBlock Text="{Binding L.RcvDone}" FontSize="28" FontWeight="SemiBold"
                    HorizontalAlignment="Center" />
         <TextBlock Text="{Binding SummaryText}" TextWrapping="Wrap" TextAlignment="Center" />
         <ItemsControl ItemsSource="{Binding PostResultLines}" HorizontalAlignment="Center">
@@ -53,12 +53,12 @@
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Content="{x:Static vm:UI.SaveReport}" Command="{Binding SaveReportCommand}"
+        <Button Content="{Binding L.SaveReport}" Command="{Binding SaveReportCommand}"
                 HorizontalAlignment="Center" Padding="16,6" />
         <TextBlock Text="{Binding ReportInfo}" FontSize="12" Opacity="0.65" TextWrapping="Wrap"
                    TextAlignment="Center"
                    IsVisible="{Binding ReportInfo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-        <HyperlinkButton Content="{x:Static vm:UI.ReportIssue}" NavigateUri="{x:Static vm:UI.IssuesUri}"
+        <HyperlinkButton Content="{Binding L.ReportIssue}" NavigateUri="{x:Static vm:UI.IssuesUri}"
                          FontSize="12" HorizontalAlignment="Center" />
       </StackPanel>
 

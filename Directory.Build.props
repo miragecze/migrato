@@ -1,7 +1,7 @@
 <Project>
   <!-- Jediné místo, kde se mění verze aplikace (SemVer). -->
   <PropertyGroup>
-    <Version>0.4.2</Version>
+    <Version>0.4.3</Version>
     <Authors>Migrato contributors</Authors>
     <Product>Migrato</Product>
   </PropertyGroup>

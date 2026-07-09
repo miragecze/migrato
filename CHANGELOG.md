@@ -3,6 +3,12 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.4.3] — 2026-07-09
+
+### Opraveno
+- Přepnutí jazyka na úvodní obrazovce přeloží i úvodní obrazovku samotnou —
+  dříve se přeložily až další obrazovky a úvod zůstal v původním jazyce.
+
 ## [0.4.2] — 2026-07-09
 
 ### Opraveno

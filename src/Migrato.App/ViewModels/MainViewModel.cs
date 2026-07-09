@@ -37,6 +37,9 @@ public partial class HomeViewModel : ObservableObject
 
     private readonly MainViewModel _main;
 
+    /// <summary>Texty pohledu — nová instance VM po přepnutí jazyka je přenačte.</summary>
+    public UI L { get; } = new();
+
     [ObservableProperty] private string _updateText = "";
 
     public string VersionText { get; } =
