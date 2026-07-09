@@ -231,36 +231,63 @@ public partial class SendViewModel : ObservableObject, IDisposable
         StepSelect = true;
     }
 
-    /// <summary>Uživatelem vybrané složky nad rámec známých — projdou stejným přenosem.</summary>
+    /// <summary>
+    /// Přidá jednu uživatelem vybranou složku. Windows dialog složek je
+    /// jednovýběrový (AllowMultiple by ho na Windows rozbil a vrátil prázdno),
+    /// takže víc složek se přidá opakovaným kliknutím na tlačítko.
+    /// </summary>
     [RelayCommand]
     private async Task AddCustomFolderAsync()
     {
+        ErrorText = "";
         if (Avalonia.Application.Current?.ApplicationLifetime
             is not Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime
             { MainWindow: { } window })
             return;
 
-        var picked = await window.StorageProvider.OpenFolderPickerAsync(
-            new Avalonia.Platform.Storage.FolderPickerOpenOptions
-            {
-                Title = L.AddCustomFolderTitle,
-                AllowMultiple = true,
-            });
-
-        foreach (var folder in picked)
+        try
         {
+            var picked = await window.StorageProvider.OpenFolderPickerAsync(
+                new Avalonia.Platform.Storage.FolderPickerOpenOptions
+                {
+                    Title = L.AddCustomFolderTitle,
+                    AllowMultiple = false,
+                });
+
+            var folder = picked.FirstOrDefault();
+            if (folder is null) return; // uživatel zavřel dialog
+
             string? path = folder.TryGetLocalPath();
-            if (path is null) continue;
-            if (Groups.Any(g => g.Model.Key == "custom:" + path)) continue;
+            if (path is null)
+            {
+                ErrorText = S.T("Tuto složku nelze přenést (není na místním disku).",
+                                "This folder can't be transferred (not on a local drive).");
+                return;
+            }
+            if (Groups.Any(g => g.Model.Key == "custom:" + path))
+            {
+                ErrorText = S.T("Tato složka už je v seznamu.", "This folder is already in the list.");
+                return;
+            }
 
             TransferGroup? group = await Task.Run(() => SourceScanner.ScanCustomFolder(path));
-            if (group is null) continue;
+            if (group is null)
+            {
+                ErrorText = S.T("Vybraná složka je prázdná nebo nedostupná.",
+                                "The selected folder is empty or unreadable.");
+                return;
+            }
 
             var vm = new GroupVm { Model = group };
             vm.PropertyChanged += (_, _) => UpdateSelectedTotal();
             Groups.Add(vm);
+            UpdateSelectedTotal();
         }
-        UpdateSelectedTotal();
+        catch (Exception ex)
+        {
+            ErrorText = S.T($"Přidání složky selhalo: {ex.Message}",
+                            $"Adding the folder failed: {ex.Message}");
+        }
     }
 
     private void UpdateSelectedTotal()

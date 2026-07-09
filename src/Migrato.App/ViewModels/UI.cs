@@ -53,7 +53,10 @@ public sealed class UI
     public string SndScanTitle => T("Zjišťuji, co lze přenést…", "Finding what can be transferred…");
     public string SndSelectTitle => T("Co se má přenést?", "What should be transferred?");
     public string AddCustomFolder => T("➕ Přidat vlastní složku…", "➕ Add your own folder…");
-    public string AddCustomFolderTitle => T("Vyberte složky k přenosu", "Select folders to transfer");
+    public string AddCustomFolderTitle => T("Vyberte složku k přenosu", "Select a folder to transfer");
+    public string AddCustomFolderHint => T(
+        "Chcete-li přidat více složek, klikněte na tlačítko opakovaně.",
+        "To add more folders, click the button again for each one.");
     public string SndStart => T("🚀 Zahájit přenos", "🚀 Start transfer");
     public string SndTransferring => T("Přenáším…", "Transferring…");
     public string Cancel => T("Zrušit", "Cancel");

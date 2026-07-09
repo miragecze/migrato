@@ -3,6 +3,14 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.6.3] — 2026-07-09
+
+### Opraveno
+- **Přidání vlastní složky nefungovalo.** Dialog byl otevřený s vícenásobným
+  výběrem, který na Windows vrací prázdný výsledek — složka se pak nepřidala.
+  Nově jednovýběrový dialog (víc složek = opakované kliknutí na tlačítko) a
+  srozumitelná zpětná vazba, když je složka prázdná, duplicitní nebo mimo disk.
+
 ## [0.6.2] — 2026-07-09
 
 ### Změněno
