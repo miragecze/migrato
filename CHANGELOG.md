@@ -3,6 +3,15 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.4.2] — 2026-07-09
+
+### Opraveno
+- **Navazování už nevypadá jako zamrzlá aplikace.** Ověřování dříve přenesených
+  dat (čtení a hashování z disku, u desítek GB i několik minut) teď obě strany
+  hlásí stavem „Ověřuji dříve přenesená data…“ a průběžně obnovují ukazatel.
+- Odesílatel po odeslání manifestu hlásí „Přenáším soubory…“ místo zastaralého
+  „Odesílám manifest…“.
+
 ## [0.4.1] — 2026-07-09
 
 ### Opraveno

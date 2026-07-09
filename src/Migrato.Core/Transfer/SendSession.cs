@@ -110,10 +110,20 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         int filesDone = 0, filesOk = 0, filesFailed = 0;
         var errors = new List<string>();
 
+        // Ověřování navázaných dat neposílá nic po síti — bez hlášky by to
+        // vypadalo jako zamrzlá aplikace (čte a hashuje se celý už přenesený objem).
+        StatusChanged?.Invoke(parts.Count > 0 ? S.VerifyingResumed : S.TransferringFiles);
+        bool announcedTransferring = parts.Count == 0;
+
         foreach (TransferItem item in items)
         {
             ct.ThrowIfCancellationRequested();
             long offset = parts.GetValueOrDefault(item.Id, 0);
+            if (!announcedTransferring && offset < item.Length)
+            {
+                StatusChanged?.Invoke(S.TransferringFiles);
+                announcedTransferring = true;
+            }
 
             await MessageIO.WriteAsync(tls, new Msg
             {
@@ -178,6 +188,7 @@ public sealed class SendSession(string host, int port, string pin, string? machi
 
         long position = 0;
         long sent = 0;
+        int chunksSinceProgress = 0;
         while (position < manifestLength)
         {
             int toRead = (int)Math.Min(ChunkSize, manifestLength - position);
@@ -192,6 +203,14 @@ public sealed class SendSession(string host, int port, string pin, string? machi
                 await target.WriteAsync(buffer.AsMemory(skip, read - skip), ct).ConfigureAwait(false);
                 sent += read - skip;
                 onProgress(sent);
+                chunksSinceProgress = 0;
+            }
+            else if (++chunksSinceProgress >= 256)
+            {
+                // I při pouhém ověřování (nic se neposílá) občas obnovit UI,
+                // ať je vidět, že aplikace žije. 256 bloků = ~32 MB.
+                onProgress(sent);
+                chunksSinceProgress = 0;
             }
             position += read;
         }

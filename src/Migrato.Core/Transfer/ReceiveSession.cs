@@ -178,6 +178,9 @@ public sealed class ReceiveSession : IDisposable
             T = MsgType.Resume, Parts = parts, FreeBytes = freeBytes,
         }, ct).ConfigureAwait(false);
 
+        if (parts.Count > 0)
+            StatusChanged?.Invoke(S.VerifyingResumed);
+
         long bytesDone = parts.Values.Sum();
         int filesDone = 0, filesOk = 0, filesFailed = 0;
         var errors = new List<string>();
@@ -307,6 +310,7 @@ public sealed class ReceiveSession : IDisposable
                     // Hash existující části, aby výsledný součet pokryl celý soubor.
                     file.Position = 0;
                     long hashed = 0;
+                    int chunksSinceProgress = 0;
                     while (hashed < offset)
                     {
                         int read = await file.ReadAsync(
@@ -316,6 +320,13 @@ public sealed class ReceiveSession : IDisposable
                             throw new IOException(S.PartFileShrunk);
                         sha.TransformBlock(buffer, 0, read, null, 0);
                         hashed += read;
+                        if (++chunksSinceProgress >= 256)
+                        {
+                            // Ověřování velkých navázaných souborů trvá — občas
+                            // obnovit UI, ať je vidět, že aplikace žije (~32 MB).
+                            onProgress(0);
+                            chunksSinceProgress = 0;
+                        }
                     }
                     file.SetLength(offset);
                     file.Position = offset;

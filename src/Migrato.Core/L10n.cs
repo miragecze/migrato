@@ -120,6 +120,12 @@ public static class S
     public static string ConnectionLostMidFile =>
         T("Spojení bylo přerušeno uprostřed souboru.", "The connection dropped in the middle of a file.");
 
+    // ---- navazování / resuming ----
+    public static string VerifyingResumed =>
+        T("Ověřuji dříve přenesená data (nic se neposílá znovu) — u velkých objemů to může několik minut trvat…",
+          "Verifying previously transferred data (nothing is re-sent) — this can take a few minutes for large amounts…");
+    public static string TransferringFiles => T("Přenáším soubory…", "Transferring files…");
+
     // ---- odesílání / sending ----
     public static string Connecting => T("Připojuji se…", "Connecting…");
     public static string PairingWith(string? machine) => T($"Páruji se s {machine}…", $"Pairing with {machine}…");
