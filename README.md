@@ -24,9 +24,23 @@ Honesty is a core feature of this tool:
 - **Installed programs are not moved 1:1** — they are reinstalled via winget and their data is transferred. Programs not available in winget need manual installation (see the list on your desktop).
 - **Hardware-bound licenses** (Office activation, Adobe, etc.) must be transferred with the vendor.
 
+## Quick start (PowerShell)
+
+Paste this into PowerShell on **both** computers — it downloads the latest release and runs it:
+
+```powershell
+$dir = "$env:LOCALAPPDATA\Migrato"
+New-Item $dir -ItemType Directory -Force | Out-Null
+Invoke-WebRequest https://github.com/miragecze/migrato/releases/latest/download/Migrato.exe -OutFile "$dir\Migrato.exe"
+Unblock-File "$dir\Migrato.exe"
+& "$dir\Migrato.exe"
+```
+
+(The app is stored outside the transferred folders on purpose — Migrato excludes the folder it runs from, so don't keep it on the Desktop or in Downloads.)
+
 ## How to use it
 
-1. Download `Migrato.exe` from [Releases](../../releases) on **both** computers.
+1. Download `Migrato.exe` from [Releases](../../releases) on **both** computers (or use the PowerShell quick start above).
 2. On the **new** computer run Migrato and choose **“This is the NEW computer”** — a 6-digit PIN appears.
 3. On the **old** computer choose **“This is the OLD computer”** — the new computer shows up in the list (both must be on the same network). If it doesn't (NAT, VMs, separated subnets), use the **manual IP:port connection** shown on the new computer's screen.
 4. Enter the PIN, pick what to transfer, start.

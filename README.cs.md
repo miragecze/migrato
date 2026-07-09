@@ -24,9 +24,23 @@ Poctivost je základní vlastnost tohoto nástroje:
 - **Nainstalované programy se nepřenášejí 1:1**, ale znovu se nainstalují přes winget a přenesou se jejich data. Programy mimo katalog wingetu je třeba doinstalovat ručně (seznam najdete na ploše).
 - **Licence vázané na hardware** (aktivace Office, Adobe apod.) je nutné převést u výrobce.
 
+## Rychlé spuštění (PowerShell)
+
+Vložte do PowerShellu na **obou** počítačích — stáhne nejnovější vydání a spustí ho:
+
+```powershell
+$dir = "$env:LOCALAPPDATA\Migrato"
+New-Item $dir -ItemType Directory -Force | Out-Null
+Invoke-WebRequest https://github.com/miragecze/migrato/releases/latest/download/Migrato.exe -OutFile "$dir\Migrato.exe"
+Unblock-File "$dir\Migrato.exe"
+& "$dir\Migrato.exe"
+```
+
+(Aplikace se schválně ukládá mimo přenášené složky — Migrato vynechává složku, ze které běží, proto ji nenechávejte na Ploše ani ve Stažených souborech.)
+
 ## Jak na to
 
-1. Stáhněte `Migrato.exe` z [Releases](../../releases) na **oba** počítače.
+1. Stáhněte `Migrato.exe` z [Releases](../../releases) na **oba** počítače (nebo použijte PowerShell příkaz výše).
 2. Na **novém** počítači spusťte Migrato a zvolte **„Tento počítač je NOVÝ“** — zobrazí se 6místný PIN.
 3. Na **starém** počítači zvolte **„Tento počítač je STARÝ“** — nový počítač se objeví v seznamu (oba musí být ve stejné síti). Když se neobjeví (NAT, virtuální stroje, oddělené podsítě), použijte **ruční připojení IP:port** — adresa je na obrazovce nového počítače.
 4. Zadejte PIN, vyberte co přenést a spusťte přenos.
