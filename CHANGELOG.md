@@ -3,6 +3,13 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.6.0] — 2026-07-09
+
+### Přidáno
+- **Výběr jednotlivých programů** — položka „Nainstalované programy“ se dá rozbalit
+  a u každého programu zvlášť rozhodnout, zda se má na novém PC nainstalovat.
+  Textový seznam všech programů se na plochu ukládá vždy celý.
+
 ## [0.5.1] — 2026-07-09
 
 ### Opraveno

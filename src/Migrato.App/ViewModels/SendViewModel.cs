@@ -20,11 +20,26 @@ public sealed partial class DeviceVm(DiscoveredDevice device) : ObservableObject
                                 $"{Device.Address} • version {Device.AppVersion}");
 }
 
+public sealed partial class PackageVm(string id) : ObservableObject
+{
+    public string Id { get; } = id;
+    [ObservableProperty] private bool _isSelected = true;
+}
+
 public sealed partial class GroupVm : ObservableObject
 {
     [ObservableProperty] private bool _isSelected = true;
 
     public required TransferGroup Model { get; init; }
+
+    /// <summary>U skupiny programů: jednotlivé balíčky k individuálnímu výběru.</summary>
+    public ObservableCollection<PackageVm> Packages { get; } = [];
+    public bool HasPackages => Packages.Count > 0;
+    public string PackagesHeader => S.T(
+        $"Vybrat programy ({Packages.Count(p => p.IsSelected)} z {Packages.Count})",
+        $"Choose programs ({Packages.Count(p => p.IsSelected)} of {Packages.Count})");
+
+    public void NotifyPackagesChanged() => OnPropertyChanged(nameof(PackagesHeader));
     public string Icon => Model.Kind switch
     {
         "folder" => "📁",
@@ -202,6 +217,12 @@ public partial class SendViewModel : ObservableObject, IDisposable
             {
                 var vm = new GroupVm { Model = group };
                 vm.PropertyChanged += (_, _) => UpdateSelectedTotal();
+                foreach (string packageId in group.WingetPackages)
+                {
+                    var package = new PackageVm(packageId);
+                    package.PropertyChanged += (_, _) => vm.NotifyPackagesChanged();
+                    vm.Packages.Add(package);
+                }
                 Groups.Add(vm);
             }
         }
@@ -254,6 +275,12 @@ public partial class SendViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task TransferAsync()
     {
+        // Výběr jednotlivých programů se propíše do winget exportu (vždy z originálu,
+        // takže funguje i opakovaný přenos se změněným výběrem).
+        foreach (GroupVm g in Groups.Where(g => g.IsSelected && g.HasPackages))
+            WingetExport.ApplySelection(
+                g.Model, g.Packages.Where(p => p.IsSelected).Select(p => p.Id).ToList());
+
         List<TransferGroup> selected = Groups.Where(g => g.IsSelected).Select(g => g.Model).ToList();
         if (selected.Count == 0)
         {

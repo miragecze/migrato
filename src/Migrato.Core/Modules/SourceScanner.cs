@@ -136,6 +136,8 @@ public sealed class SourceScanner(string stagingDir)
             Description = S.InstalledProgramsDesc(apps.Count),
             Files = files,
             PostActionType = ActionType.WingetImport,
+            WingetPackages = File.Exists(exportPath) ? WingetExport.ReadPackages(exportPath) : [],
+            WingetExportPath = File.Exists(exportPath) ? exportPath : null,
         };
     }
 

@@ -20,6 +20,12 @@ public sealed class TransferGroup
     public string? WarnIfProcessRunning { get; init; }
 
     /// <summary>Typ akce, kterou má cíl po přenosu provést (ActionType.*), pokud nějakou má.</summary>
-    public string? PostActionType { get; init; }
+    public string? PostActionType { get; set; }
     public string? WingetId { get; init; }
+
+    /// <summary>U skupiny „Nainstalované programy“: winget id všech nalezených balíčků (pro výběr v UI).</summary>
+    public List<string> WingetPackages { get; init; } = [];
+
+    /// <summary>Původní (nefiltrovaný) winget export — výběr programů se aplikuje vždy z něj.</summary>
+    public string? WingetExportPath { get; set; }
 }

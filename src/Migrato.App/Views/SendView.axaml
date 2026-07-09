@@ -90,6 +90,19 @@
                                TextWrapping="Wrap" />
                     <TextBlock Text="{Binding WarningText}" FontSize="12" Foreground="Orange"
                                TextWrapping="Wrap" IsVisible="{Binding HasWarning}" />
+                    <Expander Header="{Binding PackagesHeader}" IsVisible="{Binding HasPackages}"
+                              FontSize="12" Margin="0,6,0,0">
+                      <ScrollViewer MaxHeight="240">
+                        <ItemsControl ItemsSource="{Binding Packages}">
+                          <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:PackageVm">
+                              <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Id}"
+                                        FontSize="12" Padding="6,2" MinHeight="26" />
+                            </DataTemplate>
+                          </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                      </ScrollViewer>
+                    </Expander>
                   </StackPanel>
                   <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="13" Opacity="0.7"
                              VerticalAlignment="Center" Margin="12,0,0,0" />
