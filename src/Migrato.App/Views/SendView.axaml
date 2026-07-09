@@ -15,7 +15,9 @@
       <TextBlock Grid.Row="0" Text="{Binding L.SndPickTitle}" FontSize="24" FontWeight="SemiBold" />
       <TextBlock Grid.Row="1" Margin="0,6,0,14" Opacity="0.7" TextWrapping="Wrap"
                  Text="{Binding L.SndPickHint}" />
-      <ListBox Grid.Row="2" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
+      <ListBox Grid.Row="2" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}"
+               Background="{StaticResource CardBrush}" CornerRadius="12" Padding="6"
+               BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1">
         <ListBox.ItemTemplate>
           <DataTemplate x:DataType="vm:DeviceVm">
             <StackPanel Orientation="Horizontal" Spacing="12" Margin="4">
@@ -74,7 +76,8 @@
     <Grid Grid.Row="1" RowDefinitions="Auto,*,Auto" IsVisible="{Binding StepSelect}">
       <TextBlock Grid.Row="0" Text="{Binding L.SndSelectTitle}" FontSize="24" FontWeight="SemiBold"
                  Margin="0,0,0,12" />
-      <ScrollViewer Grid.Row="1">
+      <Border Grid.Row="1" Classes="card">
+      <ScrollViewer>
         <ItemsControl ItemsSource="{Binding Groups}">
           <ItemsControl.ItemTemplate>
             <DataTemplate x:DataType="vm:GroupVm">
@@ -125,6 +128,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
       </ScrollViewer>
+      </Border>
       <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" Margin="0,14,0,0">
         <StackPanel Grid.Column="0" Margin="0,0,14,0" Spacing="2">
           <Button Content="{Binding L.AddCustomFolder}"

@@ -15,23 +15,28 @@
     </StackPanel>
 
   <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" MaxWidth="600">
-    <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" HorizontalAlignment="Center" />
-    <TextBlock Text="{Binding L.HomeSubtitle}"
-               FontSize="16" Opacity="0.75" TextWrapping="Wrap" TextAlignment="Center" />
+    <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" HorizontalAlignment="Center"
+               Foreground="{StaticResource BrandGradient}" />
+    <TextBlock Text="{Binding L.HomeSubtitle}" Foreground="{StaticResource InkBrush}"
+               FontSize="16" Opacity="0.8" TextWrapping="Wrap" TextAlignment="Center" />
 
-    <Button Command="{Binding SendCommand}" HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Left" Padding="22,16" Margin="0,20,0,0" CornerRadius="10">
+    <Button Classes="role" Command="{Binding SendCommand}" HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left" Padding="22,16" Margin="0,20,0,0">
       <StackPanel Spacing="4">
-        <TextBlock Text="{Binding L.HomeOldTitle}" FontSize="19" FontWeight="SemiBold" />
-        <TextBlock Text="{Binding L.HomeOldSub}" FontSize="13" Opacity="0.7" />
+        <TextBlock Text="{Binding L.HomeOldTitle}" FontSize="19" FontWeight="SemiBold"
+                   Foreground="{StaticResource InkBrush}" />
+        <TextBlock Text="{Binding L.HomeOldSub}" FontSize="13" Opacity="0.65"
+                   Foreground="{StaticResource InkBrush}" />
       </StackPanel>
     </Button>
 
-    <Button Command="{Binding ReceiveCommand}" HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Left" Padding="22,16" CornerRadius="10">
+    <Button Classes="role" Command="{Binding ReceiveCommand}" HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left" Padding="22,16">
       <StackPanel Spacing="4">
-        <TextBlock Text="{Binding L.HomeNewTitle}" FontSize="19" FontWeight="SemiBold" />
-        <TextBlock Text="{Binding L.HomeNewSub}" FontSize="13" Opacity="0.7" />
+        <TextBlock Text="{Binding L.HomeNewTitle}" FontSize="19" FontWeight="SemiBold"
+                   Foreground="{StaticResource InkBrush}" />
+        <TextBlock Text="{Binding L.HomeNewSub}" FontSize="13" Opacity="0.65"
+                   Foreground="{StaticResource InkBrush}" />
       </StackPanel>
     </Button>
 

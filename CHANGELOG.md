@@ -3,6 +3,13 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.7.1] — 2026-07-09
+
+### Změněno
+- **Nový kabát** — barvy ikony (modrofialový gradient) prostupují celou aplikací:
+  tónované pozadí místo bílé, gradientový nadpis a akční tlačítka, bílé karty
+  voleb a seznamů, PIN ve značkovém boxu, obarvený ukazatel průběhu.
+
 ## [0.7.0] — 2026-07-09
 
 ### Přidáno
