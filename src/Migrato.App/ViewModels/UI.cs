@@ -17,6 +17,9 @@ public static class UI
         "Spusťte aplikaci na obou počítačích připojených ke stejné síti.",
         "Run the app on both computers connected to the same network.");
 
+    public static string MadeBy => T(
+        "vytvořil miragecze · zdrojáky na GitHubu", "made by miragecze · source on GitHub");
+
     // Příjem / Receive
     public static string RcvTitle => T("📥  Tento počítač přijme data", "📥  This computer will receive data");
     public static string RcvPinLabel => T("PIN pro spárování", "Pairing PIN");

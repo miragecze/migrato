@@ -3,6 +3,13 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.3.1] — 2026-07-09
+
+### Přidáno
+- Úvodní obrazovka: odkaz na autora a GitHub (miragecze/migrato).
+- Tichá kontrola aktualizací — když na GitHubu existuje novější vydání,
+  zobrazí se odkaz ke stažení. Bez telemetrie: jediný dotaz na veřejné API GitHubu.
+
 ## [0.3.0] — 2026-07-09
 
 ### Změněno
