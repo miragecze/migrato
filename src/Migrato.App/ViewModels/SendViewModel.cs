@@ -16,8 +16,17 @@ public sealed partial class DeviceVm(DiscoveredDevice device) : ObservableObject
 {
     public DiscoveredDevice Device { get; } = device;
     public string Machine => Device.Machine;
-    public string Detail => S.T($"{Device.Address} • verze {Device.AppVersion}",
-                                $"{Device.Address} • version {Device.AppVersion}");
+    public string Detail
+    {
+        get
+        {
+            string basic = S.T($"{Device.Address} • verze {Device.AppVersion}",
+                               $"{Device.Address} • version {Device.AppVersion}");
+            return Device.FreeBytes is long free
+                ? basic + S.T($" • volných {Format.Bytes(free)}", $" • {Format.Bytes(free)} free")
+                : basic;
+        }
+    }
 }
 
 public sealed partial class PackageVm(string id) : ObservableObject
@@ -121,6 +130,7 @@ public partial class SendViewModel : ObservableObject, IDisposable
     [ObservableProperty] private string _currentFile = "";
     [ObservableProperty] private string _summaryText = "";
     [ObservableProperty] private string _selectedTotalText = "";
+    [ObservableProperty] private string _targetFreeText = "";
     [ObservableProperty] private string _reportInfo = "";
     [ObservableProperty] private bool _isPaused;
 
@@ -205,7 +215,7 @@ public partial class SendViewModel : ObservableObject, IDisposable
             return;
         }
 
-        SelectedDevice = new DeviceVm(new DiscoveredDevice(input, address, port, "", "?"));
+        SelectedDevice = new DeviceVm(new DiscoveredDevice(input, address, port, "", "?", null));
         ErrorText = "";
         StepDevices = false;
         StepPin = true;
@@ -270,6 +280,10 @@ public partial class SendViewModel : ObservableObject, IDisposable
         }
 
         UpdateSelectedTotal();
+        TargetFreeText = SelectedDevice?.Device.FreeBytes is long free
+            ? S.T($"Volné místo na novém počítači: {Format.Bytes(free)}",
+                  $"Free space on the new computer: {Format.Bytes(free)}")
+            : "";
         StepSelect = true;
     }
 

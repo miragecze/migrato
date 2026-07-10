@@ -20,9 +20,12 @@ public sealed class ReceiveSession : IDisposable
     private const int ChunkSize = 128 * 1024;
     private const string PartSuffix = ".migrato-part";
 
+    /// <summary>Preferovaný port — stálý kvůli pravidlům firewallu; při obsazení se vezme náhodný.</summary>
+    public const int PreferredTcpPort = 53425;
+
     private readonly string _machineName;
     private readonly X509Certificate2 _certificate;
-    private readonly TcpListener _listener;
+    private TcpListener _listener;
     private int _failedPairAttempts;
 
     public string Pin { get; }
@@ -39,17 +42,27 @@ public sealed class ReceiveSession : IDisposable
         _certificate = TlsHelper.CreateEphemeralCertificate(_machineName);
         Fingerprint = TlsHelper.Fingerprint(_certificate);
         Pin = Pairing.GeneratePin();
-        _listener = new TcpListener(IPAddress.Any, 0);
+        _listener = new TcpListener(IPAddress.Any, PreferredTcpPort);
     }
 
     /// <summary>Čeká na odesílatele, obslouží celý přenos a vrátí souhrn.</summary>
     public async Task<TransferSummary> RunAsync(CancellationToken ct = default)
     {
         using var awake = new SleepBlocker();
-        _listener.Start();
+        try
+        {
+            _listener.Start();
+        }
+        catch (SocketException)
+        {
+            // Preferovaný port je obsazený (jiná instance?) — náhodný funguje taky,
+            // odesílatel se ho dozví z ohlášení.
+            _listener = new TcpListener(IPAddress.Any, 0);
+            _listener.Start();
+        }
         Port = ((IPEndPoint)_listener.LocalEndpoint).Port;
 
-        using var announcer = new DiscoveryAnnouncer(_machineName, Port, Fingerprint);
+        using var announcer = new DiscoveryAnnouncer(_machineName, Port, Fingerprint, GetFreeBytes());
         announcer.Start();
         StatusChanged?.Invoke(S.WaitingForConnection(Pin));
 
@@ -162,20 +175,9 @@ public sealed class ReceiveSession : IDisposable
                 parts[item.Id] = item.Length;
             }
         }
-        long? freeBytes = null;
-        try
-        {
-            string root = Path.GetPathRoot(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))!;
-            freeBytes = new DriveInfo(root).AvailableFreeSpace;
-        }
-        catch
-        {
-            // Bez údaje o volném místě se kontrola na odesílateli prostě přeskočí.
-        }
         await MessageIO.WriteAsync(tls, new Msg
         {
-            T = MsgType.Resume, Parts = parts, FreeBytes = freeBytes,
+            T = MsgType.Resume, Parts = parts, FreeBytes = GetFreeBytes(),
         }, ct).ConfigureAwait(false);
 
         if (parts.Count > 0)
@@ -390,6 +392,21 @@ public sealed class ReceiveSession : IDisposable
         if (error is not null || partPath is null) return (null, error);
         sha.TransformFinalBlock([], 0, 0);
         return (Convert.ToHexString(sha.Hash!), null);
+    }
+
+    /// <summary>Volné místo na disku s uživatelským profilem; null, když nejde zjistit.</summary>
+    private static long? GetFreeBytes()
+    {
+        try
+        {
+            string root = Path.GetPathRoot(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))!;
+            return new DriveInfo(root).AvailableFreeSpace;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private static void TryDelete(string path)

@@ -8,12 +8,13 @@ using System.Text.Json;
 namespace Migrato.Core.Discovery;
 
 public sealed record DiscoveredDevice(
-    string Machine, IPAddress Address, int Port, string Fingerprint, string AppVersion)
+    string Machine, IPAddress Address, int Port, string Fingerprint, string AppVersion, long? FreeBytes)
 {
     public DateTime LastSeen { get; init; } = DateTime.UtcNow;
 }
 
-internal sealed record AnnouncePayload(string App, int V, string Machine, int Port, string Fp, string? Ver);
+internal sealed record AnnouncePayload(
+    string App, int V, string Machine, int Port, string Fp, string? Ver, long? Free);
 
 /// <summary>
 /// Příjemce (nový PC) pravidelně ohlašuje svou přítomnost UDP broadcastem,
@@ -62,10 +63,11 @@ public sealed class DiscoveryAnnouncer : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private Task? _loop;
 
-    public DiscoveryAnnouncer(string machine, int tcpPort, string fingerprint)
+    public DiscoveryAnnouncer(string machine, int tcpPort, string fingerprint, long? freeBytes = null)
     {
         var payload = new AnnouncePayload(
-            Discovery.AppId, Discovery.ProtocolVersion, machine, tcpPort, fingerprint, AppVersion.Current);
+            Discovery.AppId, Discovery.ProtocolVersion, machine, tcpPort, fingerprint,
+            AppVersion.Current, freeBytes);
         _payload = JsonSerializer.SerializeToUtf8Bytes(payload, Discovery.Json);
     }
 
@@ -163,7 +165,7 @@ public sealed class DiscoveryListener : IDisposable
 
                     var device = new DiscoveredDevice(
                         payload.Machine, result.RemoteEndPoint.Address, payload.Port, payload.Fp,
-                        payload.Ver ?? "?");
+                        payload.Ver ?? "?", payload.Free);
                     _devices[$"{device.Address}:{device.Port}"] = device;
                 }
                 catch

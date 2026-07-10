@@ -3,6 +3,16 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.8.0] — 2026-07-10
+
+### Přidáno
+- **Pevný port 53425** pro přenos (fallback na náhodný, když je obsazený) —
+  firewall se dá povolit jednou provždy; hledání běží dál na UDP 42424.
+- **Volné místo nového PC viditelné předem** — ohlašuje se při hledání v síti,
+  zobrazuje se u zařízení i na obrazovce výběru obsahu.
+- README: srovnávací tabulka (LocalSend, Windows Přenos na nový PC, EaseUS)
+  a sekce Řešení potíží (firewall, podsítě, virtuální stroje, izolace klientů).
+
 ## [0.7.1] — 2026-07-09
 
 ### Změněno

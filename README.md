@@ -56,6 +56,30 @@ Existing files at the same destination path are overwritten — the tool is desi
 
 > **SmartScreen note:** the exe is not code-signed yet, so Windows shows an “unknown publisher” warning on first run. Click *More info → Run anyway*. Code signing is planned once the project matures.
 
+## How it compares
+
+| | **Migrato** | LocalSend | Windows “Transfer to a new PC” | EaseUS Todo PCTrans |
+|---|---|---|---|---|
+| Price | free, open source | free, open source | free (Windows 11 only) | paid |
+| Full PC migration wizard | ✅ | ❌ (manual file sharing) | partial | ✅ |
+| Program reinstall | ✅ via winget | ❌ | ❌ | ✅ 1:1 (best effort) |
+| Thunderbird/Firefox incl. passwords | ✅ | ❌ | ❌ | partial |
+| App settings catalog | ✅ | ❌ | ❌ | ✅ |
+| Wi-Fi networks & passwords | ✅ | ❌ | ❌ | ✅ |
+| Wallpaper & fonts | ✅ | ❌ | partial | ✅ |
+| Works without a Microsoft account | ✅ | ✅ | ❌ (required) | ✅ |
+| Resume after interruption | ✅ | ❌ | ? | ✅ |
+
+## Troubleshooting
+
+**The old computer can't see the new one:**
+- Both computers must be on the **same network and subnet** (check with `ipconfig` that e.g. both are `192.168.1.x`).
+- **Virtual machines** (Parallels, VirtualBox, Hyper-V): switch networking to *Bridged* mode, or use the manual IP:port connection shown on the new computer's screen.
+- **Firewall**: allow Migrato on first run, or open **UDP 42424** (discovery) and **TCP 53425** (transfer) inbound for private networks.
+- Some routers have **AP/client isolation** enabled on Wi-Fi — devices can't see each other; use an Ethernet cable or disable isolation.
+
+**The transfer seems stuck:** if the progress bar moves or file names change, it's working (verifying resumed data reads gigabytes from disk without network traffic). A genuinely dead connection fails on its own within ~30 seconds.
+
 ## Security
 
 - All transfer traffic is TLS-encrypted (an ephemeral certificate per session).

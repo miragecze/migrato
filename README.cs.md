@@ -56,6 +56,30 @@ Existující soubory na stejném cílovém místě se přepíší — nástroj j
 
 > **Poznámka ke SmartScreen:** exe zatím není podepsané certifikátem, Windows proto při prvním spuštění zobrazí varování „neznámý vydavatel“. Klikněte na *Další informace → Přesto spustit*. Podpis kódu je v plánu, až projekt vyzraje.
 
+## Srovnání s ostatními
+
+| | **Migrato** | LocalSend | Windows „Přenos na nový PC“ | EaseUS Todo PCTrans |
+|---|---|---|---|---|
+| Cena | zdarma, open source | zdarma, open source | zdarma (jen Windows 11) | placené |
+| Průvodce migrací celého PC | ✅ | ❌ (ruční posílání souborů) | částečně | ✅ |
+| Reinstalace programů | ✅ přes winget | ❌ | ❌ | ✅ 1:1 (jak kdy) |
+| Thunderbird/Firefox vč. hesel | ✅ | ❌ | ❌ | částečně |
+| Katalog nastavení aplikací | ✅ | ❌ | ❌ | ✅ |
+| Wi-Fi sítě s hesly | ✅ | ❌ | ❌ | ✅ |
+| Tapeta a písma | ✅ | ❌ | částečně | ✅ |
+| Bez účtu Microsoft | ✅ | ✅ | ❌ (vyžaduje ho) | ✅ |
+| Navázání po přerušení | ✅ | ❌ | ? | ✅ |
+
+## Řešení potíží
+
+**Starý počítač nevidí nový:**
+- Oba počítače musí být ve **stejné síti a podsíti** (zkontrolujte přes `ipconfig`, že mají např. oba `192.168.1.x`).
+- **Virtuální stroje** (Parallels, VirtualBox, Hyper-V): přepněte síť do režimu *Bridged*, nebo použijte ruční připojení IP:port z obrazovky nového počítače.
+- **Firewall**: povolte Migrato při prvním spuštění, nebo otevřete příchozí **UDP 42424** (hledání) a **TCP 53425** (přenos) pro privátní sítě.
+- Některé routery mají na Wi-Fi zapnutou **izolaci klientů** — zařízení se pak nevidí; pomůže kabel nebo vypnutí izolace.
+
+**Přenos vypadá zaseknutě:** pokud se hýbe ukazatel nebo se mění názvy souborů, pracuje se (ověřování navázaných dat čte gigabajty z disku bez síťového provozu). Skutečně mrtvé spojení samo spadne do ~30 sekund.
+
 ## Zabezpečení
 
 - Veškerý přenos jde šifrovaným TLS spojením (jednorázový certifikát pro každou relaci).
