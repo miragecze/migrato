@@ -22,5 +22,12 @@
     </DataTemplate>
   </Window.DataTemplates>
 
-  <ContentControl Content="{Binding CurrentPage}" />
+  <Grid>
+    <!-- Vodoznak značkové šipky za obsahem celého okna. -->
+    <Viewbox Width="620" HorizontalAlignment="Right" VerticalAlignment="Center"
+             Margin="0,0,-150,0" Opacity="0.06" IsHitTestVisible="False">
+      <Path Data="{StaticResource ArrowGeometry}" Fill="{StaticResource BrandGradient}" />
+    </Viewbox>
+    <ContentControl Content="{Binding CurrentPage}" />
+  </Grid>
 </Window>

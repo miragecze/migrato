@@ -21,6 +21,9 @@
     <SolidColorBrush x:Key="CardBrush" Color="White" />
     <SolidColorBrush x:Key="CardBorderBrush" Color="#E3E7F4" />
     <SolidColorBrush x:Key="InkBrush" Color="#1E293B" />
+
+    <!-- Šipka z ikony aplikace — vodoznak, logo i drobné akcenty. -->
+    <StreamGeometry x:Key="ArrowGeometry">M 10,40 L 52,40 L 52,26 L 86,50 L 52,74 L 52,60 L 10,60 Z</StreamGeometry>
   </Application.Resources>
 
   <Application.Styles>

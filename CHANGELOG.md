@@ -3,6 +3,12 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.8.1] — 2026-07-10
+
+### Změněno
+- Značková šipka prostupuje oknem: vodoznak přes celé okno, logo vedle nadpisu
+  a šipka směru přenosu mezi volbami STARÝ → NOVÝ.
+
 ## [0.8.0] — 2026-07-10
 
 ### Přidáno

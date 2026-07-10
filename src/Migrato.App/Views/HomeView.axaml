@@ -15,8 +15,16 @@
     </StackPanel>
 
   <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16" MaxWidth="600">
-    <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" HorizontalAlignment="Center"
-               Foreground="{StaticResource BrandGradient}" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="14">
+      <Border Width="48" Height="48" CornerRadius="11" Background="{StaticResource BrandGradient}"
+              VerticalAlignment="Center">
+        <Viewbox Margin="7">
+          <Path Data="{StaticResource ArrowGeometry}" Fill="White" />
+        </Viewbox>
+      </Border>
+      <TextBlock Text="Migrato" FontSize="46" FontWeight="Bold" VerticalAlignment="Center"
+                 Foreground="{StaticResource BrandGradient}" />
+    </StackPanel>
     <TextBlock Text="{Binding L.HomeSubtitle}" Foreground="{StaticResource InkBrush}"
                FontSize="16" Opacity="0.8" TextWrapping="Wrap" TextAlignment="Center" />
 
@@ -29,6 +37,14 @@
                    Foreground="{StaticResource InkBrush}" />
       </StackPanel>
     </Button>
+
+    <!-- Směr přenosu: ze starého do nového. -->
+    <Viewbox Width="26" Height="26" HorizontalAlignment="Center" Margin="0,-6">
+      <Viewbox.RenderTransform>
+        <RotateTransform Angle="90" />
+      </Viewbox.RenderTransform>
+      <Path Data="{StaticResource ArrowGeometry}" Fill="{StaticResource BrandGradient}" Opacity="0.9" />
+    </Viewbox>
 
     <Button Classes="role" Command="{Binding ReceiveCommand}" HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Left" Padding="22,16">
