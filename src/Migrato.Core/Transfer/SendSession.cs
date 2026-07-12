@@ -88,15 +88,20 @@ public sealed class SendSession(string host, int port, string pin, string? machi
         foreach (TransferGroup group in groups)
         {
             var groupItemIds = new List<int>();
+            var registryIds = new List<int>();
             foreach (ScannedFile file in group.Files)
             {
                 int id = nextId++;
                 items.Add(new TransferItem(id, file.Category, file.RelativePath, file.Length));
                 sourceById[id] = file.SourcePath;
                 groupItemIds.Add(id);
+                if (file.Category == Categories.Registry) registryIds.Add(id);
             }
             if (group.PostActionType is not null)
                 actions.Add(new PostAction(group.PostActionType, groupItemIds, group.Key, group.WingetId));
+            // Import registru běží až po případné instalaci aplikace (EnsureApp výše).
+            if (registryIds.Count > 0)
+                actions.Add(new PostAction(ActionType.RegistryImport, registryIds, group.Key));
         }
         long totalBytes = items.Sum(i => i.Length);
 

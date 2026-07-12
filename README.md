@@ -15,7 +15,7 @@ Run the app on both computers, a PIN appears on the new one, pick what to transf
 - **Files** — Desktop, Documents, Downloads, Pictures, Music, Videos, Favorites. Folders are resolved via Windows APIs, so OneDrive-redirected folders work too. Plus **any custom folders** from anywhere (including other drives) — they land on the new PC's desktop in “Transferred folders”.
 - **Mozilla Thunderbird** — the complete profile: accounts, mail, passwords, contacts, calendar, filters, add-ons.
 - **Mozilla Firefox** — the complete profile: bookmarks, passwords, history, extensions, open tabs.
-- **Settings of other apps** — Notepad++, VLC, FileZilla, OBS Studio, GIMP, LibreOffice, KeePass, VS Code, Windows Terminal, IrfanView. Missing apps are installed automatically via winget.
+- **Settings of other apps** — Notepad++, VLC, FileZilla, OBS Studio, GIMP, LibreOffice, KeePass, VS Code, Windows Terminal, IrfanView, PuTTY, 7-Zip, WinRAR, Total Commander. Includes settings stored in the registry (HKCU). Missing apps are installed automatically via winget.
 - **Chrome and Edge bookmarks** — default profile.
 - **Installed programs** — reinstalled automatically on the new PC via `winget import`; a human-readable list of all programs is saved to the desktop.
 - **Wi-Fi networks including passwords** — the new computer connects on its own.

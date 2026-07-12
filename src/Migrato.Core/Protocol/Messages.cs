@@ -72,4 +72,7 @@ public static class ActionType
 
     /// <summary>Nastavit přenesenou tapetu a zaregistrovat přenesená písma.</summary>
     public const string ApplyLook = "applyLook";
+
+    /// <summary>Naimportovat přenesené .reg soubory (reg import) do registru uživatele.</summary>
+    public const string RegistryImport = "registryImport";
 }

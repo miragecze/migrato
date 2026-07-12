@@ -131,6 +131,48 @@
       "processName": "i_view64",
       "wingetId": "IrfanSkiljan.IrfanView",
       "paths": [{ "root": "Roaming", "rel": "IrfanView" }]
+    },
+    {
+      "key": "putty",
+      "name": "PuTTY",
+      "description": "Uložené relace, hostitelské klíče a nastavení (z registru)",
+      "descriptionEn": "Saved sessions, host keys and settings (from the registry)",
+      "processName": "putty",
+      "wingetId": "PuTTY.PuTTY",
+      "paths": [],
+      "registryKeys": ["HKCU\\Software\\SimonTatham\\PuTTY"]
+    },
+    {
+      "key": "sevenzip",
+      "name": "7-Zip",
+      "description": "Nastavení a přiřazení typů souborů (z registru)",
+      "descriptionEn": "Settings and file associations (from the registry)",
+      "processName": null,
+      "wingetId": "7zip.7zip",
+      "paths": [],
+      "registryKeys": ["HKCU\\Software\\7-Zip"]
+    },
+    {
+      "key": "winrar",
+      "name": "WinRAR",
+      "description": "Nastavení a profily komprese (z registru)",
+      "descriptionEn": "Settings and compression profiles (from the registry)",
+      "processName": null,
+      "wingetId": "RARLab.WinRAR",
+      "paths": [],
+      "registryKeys": ["HKCU\\Software\\WinRAR"]
+    },
+    {
+      "key": "totalcommander",
+      "name": "Total Commander",
+      "description": "Konfigurace, barevné filtry a nastavení (soubory i registr)",
+      "descriptionEn": "Configuration, colour filters and settings (files and registry)",
+      "processName": "TOTALCMD64",
+      "wingetId": "Ghisler.TotalCommander",
+      "paths": [
+        { "root": "Roaming", "rel": "GHISLER" }
+      ],
+      "registryKeys": ["HKCU\\Software\\Ghisler\\Total Commander"]
     }
   ]
 }

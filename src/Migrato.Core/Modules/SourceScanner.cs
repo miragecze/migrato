@@ -17,7 +17,7 @@ public sealed class SourceScanner(string stagingDir)
         var groups = new List<TransferGroup>();
 
         groups.AddRange(ScanKnownFolders(ct));
-        groups.AddRange(ScanAppProfiles(ct));
+        groups.AddRange(await ScanAppProfilesAsync(ct).ConfigureAwait(false));
 
         TransferGroup? winget = await CreateWingetGroupAsync(ct).ConfigureAwait(false);
         if (winget is not null) groups.Add(winget);
@@ -57,7 +57,7 @@ public sealed class SourceScanner(string stagingDir)
         return groups;
     }
 
-    private List<TransferGroup> ScanAppProfiles(CancellationToken ct)
+    private async Task<List<TransferGroup>> ScanAppProfilesAsync(CancellationToken ct)
     {
         var groups = new List<TransferGroup>();
         foreach (AppProfile profile in AppProfileCatalog.Load())
@@ -83,6 +83,21 @@ public sealed class SourceScanner(string stagingDir)
                     CollectFiles(full, root, category, files, ct);
                 }
             }
+
+            // Nastavení uložené v registru (HKCU) — export do .reg souborů ve staging.
+            if (profile.RegistryKeys is { Count: > 0 })
+            {
+                foreach (string key in profile.RegistryKeys)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    string rel = $"{profile.Key}/{RegistryModule.RegFileName(key)}";
+                    string outPath = Path.Combine(stagingDir, "registry", rel);
+                    if (await RegistryModule.ExportAsync(key, outPath, ct).ConfigureAwait(false))
+                        files.Add(new ScannedFile(
+                            outPath, Categories.Registry, rel, new FileInfo(outPath).Length));
+                }
+            }
+
             if (files.Count == 0) continue;
 
             bool running = profile.ProcessName is not null

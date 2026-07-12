@@ -53,6 +53,7 @@ public sealed class DestinationResolver(string stagingDir)
         {
             Categories.Winget => Path.Combine(StagingDir, "winget", rel),
             Categories.Wifi => Path.Combine(StagingDir, "wifi", rel),
+            Categories.Registry => Path.Combine(StagingDir, "registry", rel),
             _ => throw new InvalidDataException($"Neznámá kategorie: {item.Category}"),
         };
     }

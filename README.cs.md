@@ -15,7 +15,7 @@ Spustíte aplikaci na obou počítačích, na novém se zobrazí PIN, na starém
 - **Soubory** — Plocha, Dokumenty, Stažené soubory, Obrázky, Hudba, Videa, Oblíbené položky. Složky se hledají přes Windows API, takže funguje i přesměrování do OneDrive. K tomu **libovolné vlastní složky** odkudkoli (i z jiných disků) — na novém PC přistanou na ploše v „Přenesených složkách“.
 - **Mozilla Thunderbird** — kompletní profil: účty, pošta, hesla, kontakty, kalendář, filtry, rozšíření.
 - **Mozilla Firefox** — kompletní profil: záložky, hesla, historie, rozšíření, otevřené panely.
-- **Nastavení dalších aplikací** — Notepad++, VLC, FileZilla, OBS Studio, GIMP, LibreOffice, KeePass, VS Code, Windows Terminal, IrfanView. Chybějící aplikace se doinstalují přes winget.
+- **Nastavení dalších aplikací** — Notepad++, VLC, FileZilla, OBS Studio, GIMP, LibreOffice, KeePass, VS Code, Windows Terminal, IrfanView, PuTTY, 7-Zip, WinRAR, Total Commander. Včetně nastavení uloženého v registru (HKCU). Chybějící aplikace se doinstalují přes winget.
 - **Záložky Chrome a Edge** — výchozí profil.
 - **Nainstalované programy** — na novém PC se automaticky doinstalují přes `winget import`; čitelný seznam programů se uloží na plochu.
 - **Wi-Fi sítě včetně hesel** — nový počítač se připojí sám.

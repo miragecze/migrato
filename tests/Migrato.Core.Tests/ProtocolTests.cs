@@ -136,7 +136,9 @@ public class AppProfileCatalogTests
         Assert.NotEmpty(profiles);
         var thunderbird = profiles.Single(p => p.Key == "thunderbird");
         Assert.Equal("Mozilla.Thunderbird", thunderbird.WingetId);
-        Assert.All(profiles, p => Assert.NotEmpty(p.Paths));
+        // Každý profil přenáší buď soubory, nebo klíče registru (nebo obojí).
+        Assert.All(profiles, p =>
+            Assert.True(p.Paths.Count > 0 || (p.RegistryKeys?.Count ?? 0) > 0, p.Key));
         Assert.All(profiles.SelectMany(p => p.Paths),
             p => Assert.Contains(p.Root, new[] { "Roaming", "Local", "Documents", "Home" }));
     }

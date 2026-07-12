@@ -3,6 +3,15 @@
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/), verzování je [SemVer](https://semver.org/lang/cs/).
 Verze se mění na jediném místě: `Directory.Build.props`.
 
+## [0.9.0] — 2026-07-11
+
+### Přidáno
+- **Nastavení z registru** — katalog aplikací umí přenést i větve registru (jen
+  HKCU, bez oprávnění správce): na zdroji `reg export`, na cíli `reg import` po
+  případné instalaci programu. Nové položky: **PuTTY** (uložené relace a klíče),
+  **7-Zip**, **WinRAR**, **Total Commander** (soubory i registr).
+- Přidání aplikace s nastavením v registru = jen pole `registryKeys` v katalogu.
+
 ## [0.8.1] — 2026-07-10
 
 ### Změněno

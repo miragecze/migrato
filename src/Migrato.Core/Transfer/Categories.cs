@@ -25,6 +25,9 @@ public static class Categories
     /// <summary>Vzhled: tapeta (rel „wallpaper…“) a uživatelská písma (rel „fonts/…“).</summary>
     public const string Look = "look";
 
+    /// <summary>Exportované .reg soubory (větve registru) — na cíli do dočasné složky, pak reg import.</summary>
+    public const string Registry = "registry";
+
     public static readonly string[] KnownFolderNames =
         ["Desktop", "Documents", "Downloads", "Pictures", "Music", "Videos", "Favorites"];
 }

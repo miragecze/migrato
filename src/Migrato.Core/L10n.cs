@@ -177,6 +177,15 @@ public static class S
     public static string ToolTimedOut(string tool, int seconds) =>
         T($"Nástroj {tool} nestihl doběhnout v limitu {seconds} s.", $"The {tool} tool did not finish within {seconds} s.");
 
+    // ---- registr / registry ----
+    public static string ImportingRegistry =>
+        T("Importuji nastavení z registru…", "Importing registry settings…");
+    public static string RegistryImported(int n) =>
+        T($"Naimportováno {n} větví registru.", $"Imported {n} registry branches.");
+    public static string RegistryPartlyFailed(int ok, int failed) =>
+        T($"Naimportováno {ok} větví registru, {failed} se nepodařilo.",
+          $"Imported {ok} registry branches, {failed} failed.");
+
     // ---- vzhled / appearance ----
     public static string LookTitle => T("Vzhled — tapeta a písma", "Appearance — wallpaper and fonts");
     public static string LookDesc(bool wallpaper, int fonts)

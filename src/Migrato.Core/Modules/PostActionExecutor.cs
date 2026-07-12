@@ -21,6 +21,7 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
                 ActionType.WifiImport => await WifiImportAsync(action, status, ct).ConfigureAwait(false),
                 ActionType.EnsureApp => await EnsureAppAsync(action, status, ct).ConfigureAwait(false),
                 ActionType.ApplyLook => ApplyLook(action),
+                ActionType.RegistryImport => await RegistryImportAsync(action, status, ct).ConfigureAwait(false),
                 _ => new PostActionResult(action.Type, action.AppKey, false, S.UnknownAction),
             };
             results.Add(result);
@@ -62,6 +63,25 @@ public sealed class PostActionExecutor(Func<int, string?> resolveItemPath)
         return code == 0
             ? new PostActionResult(action.Type, null, true, S.ProgramsInstalled)
             : new PostActionResult(action.Type, null, false, S.ProgramsPartlyFailed);
+    }
+
+    private async Task<PostActionResult> RegistryImportAsync(
+        PostAction action, Action<string>? status, CancellationToken ct)
+    {
+        if (!OperatingSystem.IsWindows())
+            return new PostActionResult(action.Type, action.AppKey, false, S.OnlyOnWindows);
+
+        status?.Invoke(S.ImportingRegistry);
+        int ok = 0, failed = 0;
+        foreach (int id in action.ItemIds ?? [])
+        {
+            string? file = resolveItemPath(id);
+            if (file is null || !file.EndsWith(".reg", StringComparison.OrdinalIgnoreCase)) continue;
+            if (await RegistryModule.ImportAsync(file, ct).ConfigureAwait(false)) ok++; else failed++;
+        }
+        return failed == 0
+            ? new PostActionResult(action.Type, action.AppKey, true, S.RegistryImported(ok))
+            : new PostActionResult(action.Type, action.AppKey, ok > 0, S.RegistryPartlyFailed(ok, failed));
     }
 
     private PostActionResult ApplyLook(PostAction action)

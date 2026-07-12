@@ -14,6 +14,12 @@ public sealed record AppProfile(
     string? WingetId,
     List<AppProfilePath> Paths)
 {
+    /// <summary>
+    /// Nepovinné klíče registru pod HKCU (nastavení programů, které je neukládá
+    /// do souborů — PuTTY, 7-Zip…). Plná cesta včetně „HKCU\“.
+    /// </summary>
+    public List<string>? RegistryKeys { get; init; }
+
     public string LocalizedDescription => Lang.IsCz ? Description : DescriptionEn;
 }
 
