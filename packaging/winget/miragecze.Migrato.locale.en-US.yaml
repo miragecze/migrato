@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
 PackageIdentifier: miragecze.Migrato
-PackageVersion: 0.8.1
+PackageVersion: 0.9.0
 PackageLocale: en-US
 Publisher: miragecze
 PublisherUrl: https://github.com/miragecze
